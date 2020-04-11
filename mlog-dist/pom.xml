@@ -1,0 +1,348 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.github.warmuuh</groupId>
+		<artifactId>mlog-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>mlog-dist</artifactId>
+
+	<scm>
+		<url>https://github.com/warmuuh/mlog</url>
+		<connection>scm:git:https://github.com/warmuuh/mlog</connection>
+		<tag>${project.version}</tag>
+	</scm>
+
+	<properties>
+		<maven.deploy.skip>true</maven.deploy.skip>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.github.warmuuh</groupId>
+			<artifactId>mlog</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.akathist.maven.plugins.launch4j</groupId>
+				<artifactId>launch4j-maven-plugin</artifactId>
+				<version>1.7.25</version>
+				<executions>
+					<execution>
+						<id>l4j-clui</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<headerType>gui</headerType>
+							<outfile>target/mlog.exe</outfile>
+							<errTitle>Mlog</errTitle>
+							<icon>src/bin/win/mlog.ico</icon>
+							<classPath>
+								<mainClass>mlog.MlogApplication</mainClass>
+								<addDependencies>false</addDependencies>
+								<preCp>plugins/*;mlog.jar</preCp>
+							</classPath>
+							<jre>
+								<path>.\jre-win64\</path>
+								<!-- <minVersion>11</minVersion> -->
+								<!-- <maxVersion>1.9.0</maxVersion> -->
+								<opts>
+									<opt>-XX:SharedArchiveFile=app-cds.jsa</opt>
+									<opt>-client</opt>
+									<opt>-XX:+UseCompressedOops</opt>
+									<opt>-XX:+UseCompressedClassPointers</opt>
+<!-- 									<opt>-Xlog:class+load:file=cds3.log</opt> -->
+
+								</opts>
+							</jre>
+							<versionInfo>
+								<fileVersion>2.0.0.0</fileVersion>
+								<txtFileVersion>2.0.0.0</txtFileVersion>
+								<fileDescription>Mlog</fileDescription>
+								<copyright>copyright</copyright>
+								<productVersion>2.0.0.0</productVersion>
+								<txtProductVersion>2.0.0.0</txtProductVersion>
+								<productName>Mlog</productName>
+								<internalName>mlog</internalName>
+								<originalFilename>mlog.exe</originalFilename>
+							</versionInfo>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- <plugin> -->
+			<!-- <groupId>sh.tak.appbundler</groupId> -->
+			<!-- <artifactId>appbundle-maven-plugin</artifactId> -->
+			<!-- <version>1.2.0</version> -->
+			<!-- <configuration> -->
+			<!-- <mainClass>mlog.MlogApplication</mainClass> -->
+			<!-- <iconFile>src/bin/mlog.icns</iconFile> -->
+			<!-- <generateDiskImageFile>true</generateDiskImageFile> -->
+			<!-- </configuration> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <phase>package</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>bundle</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+
+
+			<plugin>
+				<!--<groupId>com.igormaznitsa</groupId>
+				<artifactId>mvn-jlink-wrapper</artifactId>
+				<version>1.0.4</version>-->
+				<groupId>com.github.warmuuh.mvn-jlink</groupId>
+				<artifactId>mvn-jlink-wrapper</artifactId>
+				<version>1.0.5</version>
+				<configuration>
+					<!-- <modulePath>${env.JAVAFX_MODS}</modulePath> -->
+					<addModules>
+						<addModule>java.base</addModule>
+						<addModule>java.compiler</addModule>
+						<addModule>java.datatransfer</addModule>
+						<addModule>java.desktop</addModule>
+						<addModule>java.logging</addModule>
+						<addModule>java.management</addModule>
+						<addModule>java.naming</addModule>
+						<addModule>java.scripting</addModule>
+						<addModule>java.sql</addModule>
+						<addModule>java.xml</addModule>
+						<addModule>java.rmi</addModule>
+						<addModule>java.net.http</addModule>
+						<addModule>jdk.jsobject</addModule>
+						<addModule>jdk.crypto.ec</addModule>
+						<addModule>jdk.unsupported</addModule>
+						<addModule>jdk.unsupported.desktop</addModule>
+						<addModule>jdk.xml.dom</addModule>
+						<addModule>jdk.scripting.nashorn</addModule>
+						<addModule>java.security.jgss</addModule>
+					</addModules>
+					<options>
+						<option>--compress=2</option>
+						<option>--no-header-files</option>
+						<option>--no-man-pages</option>
+						<option>--vm=client</option>
+					</options>
+				</configuration>
+				<executions>
+					<execution>
+						<id>call-jlink-win</id>
+						<goals>
+							<goal>jlink</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<output>${project.build.directory}${file.separator}jre-win64</output>
+
+							<provider>BELLSOFT</provider><!-- liberica contains javafx -->
+							<providerConfig>
+								<version>11.0.3</version>
+								<arch>amd64</arch>
+								<type>jdk</type>
+								<os>windows</os>
+							</providerConfig>
+						</configuration>
+					</execution>
+					<execution>
+						<id>call-jlink-linux</id>
+						<goals>
+							<goal>jlink</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<output>${project.build.directory}${file.separator}jre-linux64</output>
+
+							<provider>BELLSOFT</provider><!-- liberica contains javafx -->
+							<providerConfig>
+								<version>11.0.3</version>
+								<arch>amd64</arch>
+								<type>jdk</type>
+								<os>linux</os>
+							</providerConfig>
+						</configuration>
+					</execution>
+					<execution>
+						<id>call-jlink-macos</id>
+						<goals>
+							<goal>jlink</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<output>${project.build.directory}${file.separator}jre-macos64</output>
+
+							<provider>BELLSOFT</provider><!-- liberica contains javafx -->
+							<providerConfig>
+								<version>11.0.3</version>
+								<arch>amd64</arch>
+								<type>jdk</type>
+								<os>macos</os>
+							</providerConfig>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>distro-assembly-win</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>${project.artifactId}-win64</finalName>
+							<descriptors>
+								<descriptor>src/assembly/bin-win.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+					<execution>
+						<id>distro-assembly-linux</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>${project.artifactId}-linux64</finalName>
+							<descriptors>
+								<descriptor>src/assembly/bin-linux.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+					<execution>
+						<id>distro-assembly-macos</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>${project.artifactId}-macos64</finalName>
+							<descriptors>
+								<descriptor>src/assembly/bin-macos.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+					<execution>
+						<id>distro-assembly-macos-bundle</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>${project.artifactId}-appbundle-macos64</finalName>
+							<descriptors>
+								<descriptor>src/assembly/bundle-macos.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+					<execution>
+						<id>plugin-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>${project.artifactId}-plugins</finalName>
+							<descriptors>
+								<descriptor>src/assembly/plugins-bin.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+						<execution>
+						<id>assembly-cli</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>${project.artifactId}-cli</finalName>
+							<descriptors>
+								<descriptor>src/assembly/bin-cli.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>de.jutzig</groupId>
+				<artifactId>github-release-plugin</artifactId>
+				<version>1.4.0</version>
+				<configuration>
+					<description>
+						Release of Milkman.
+						See [Changelog](/changelog.md) for changes.
+					</description>
+					<releaseName>${project.version}</releaseName>
+					<tag>${project.version}</tag>
+					<artifact>${project.artifactId}-bin.zip</artifact>
+
+					<!-- If your project has additional artifacts, such as ones produced 
+						by the maven-assembly-plugin, you can define the following (requires version 
+						1.1.1 of the plugin or higher): -->
+					<fileSets>
+						<fileSet>
+							<directory>${project.build.directory}</directory>
+							<includes>
+								<include>${project.artifactId}*.tar.gz</include>
+								<include>${project.artifactId}*.tgz</include>
+								<include>${project.artifactId}*.zip</include>
+							</includes>
+							<excludes>
+								<exclude>${project.artifactId}*.jar</exclude>
+							</excludes>
+						</fileSet>
+					</fileSets>
+
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>delpoy-github</id>
+						<goals>
+							<goal>release</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+					<execution>
+						<id>deploy-nightly</id>
+						<goals>
+							<goal>release</goal>
+						</goals>
+						<phase>none</phase>
+						<configuration>
+							<overwriteArtifact>true</overwriteArtifact>
+							<tag>nightly</tag>
+							<releaseName>Nightly Build</releaseName>
+							<description>
+								Nightly Release of Milkman.
+								See [Changelog](/changelog.md) for changes.
+							</description>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+
+	<pluginRepositories>
+		<pluginRepository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+
+</project>
