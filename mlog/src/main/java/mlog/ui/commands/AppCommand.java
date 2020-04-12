@@ -14,4 +14,7 @@ public interface AppCommand {
   @Value
   class StopCurrentConfiguration implements AppCommand {}
 
+  @Value
+  class ShowEditConfigurationDialog implements  AppCommand {}
+
 }

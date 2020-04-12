@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import mlog.ctrl.rt.MessageBuffer;
-import mlog.domain.Message;
+import mlog.ctrl.rt.Message;
 
 public class BatchedDataModel extends AbstractTableModel{
 

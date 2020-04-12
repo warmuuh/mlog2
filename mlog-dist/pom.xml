@@ -24,6 +24,12 @@
 			<artifactId>mlog</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.github.warmuuh</groupId>
+			<artifactId>mlog-k8s</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

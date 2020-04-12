@@ -3,8 +3,6 @@ package mlog.ctrl.rt;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import javax.inject.Singleton;
-import mlog.domain.Message;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.UnicastProcessor;
 

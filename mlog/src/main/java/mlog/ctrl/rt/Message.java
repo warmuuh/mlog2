@@ -1,6 +1,8 @@
-package mlog.domain;
+package mlog.ctrl.rt;
 
 import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Value;
 
 @Value

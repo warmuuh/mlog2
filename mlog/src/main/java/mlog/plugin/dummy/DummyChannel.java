@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import mlog.ctrl.rt.Channel;
-import mlog.domain.Message;
+import mlog.ctrl.rt.Message;
+import mlog.ctrl.rt.StatefulLogParser;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.SynchronousSink;
 
@@ -14,7 +15,7 @@ import reactor.core.publisher.SynchronousSink;
 public class DummyChannel implements Channel {
 
   private final String message;
-
+  private final StatefulLogParser parser;
   @Override
   public String getName() {
     return "dummy";
@@ -22,8 +23,9 @@ public class DummyChannel implements Channel {
 
   @Override
   public Flux<Message> getMessages(){
-    Consumer<SynchronousSink<Message>> gen = s -> s.next(new Message("dummyChan", Map.of("message",message)));
+    Consumer<SynchronousSink<String>> gen = s -> s.next("08:59:33.047 [threadname] INFO mlog.plugin.dummy.DummyChannel " + message);
     return Flux.generate(gen)
+        .map(parser::parse)
         .delayElements(Duration.of(250, ChronoUnit.MILLIS));
   }
 }

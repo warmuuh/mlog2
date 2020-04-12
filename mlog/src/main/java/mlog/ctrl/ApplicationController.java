@@ -1,28 +1,36 @@
 package mlog.ctrl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import mlog.ctrl.rt.CfgRunContext;
+import mlog.ctrl.rt.Channel;
 import mlog.ctrl.rt.MessageBuffer;
 import mlog.ctrl.rt.MessageQueue;
+import mlog.ctrl.rt.StatefulLogParser;
 import mlog.domain.Configuration;
 import mlog.persistence.PersistenceManager;
 import mlog.plugin.LoggerPlugin;
 import mlog.plugin.PluginManager;
 import mlog.ui.ConnectionView;
 import mlog.ui.LogView;
+import mlog.ui.MainWindow;
 import mlog.ui.StatusView;
 import mlog.ui.Toolbar;
 import mlog.ui.commands.AppCommand;
 import mlog.ui.commands.AppCommand.ExecConfiguration;
+import mlog.ui.commands.AppCommand.ShowEditConfigurationDialog;
 import mlog.ui.commands.AppCommand.StopCurrentConfiguration;
+import mlog.ui.dialogs.EditConfigurationDialog;
+import reactor.core.Disposable;
 
 @Singleton
 @RequiredArgsConstructor
 public class ApplicationController {
 
+	private final MainWindow mainWindow;
 	private final Toolbar toolbar;
 	private final StatusView statusView;
 	private final LogView logView;
@@ -41,21 +49,36 @@ public class ApplicationController {
 	}
 
 
+	public void destroyApplication(){
+		stopConfiguration(currentRunContext);
+	}
+
 	public void handleCommand(AppCommand command) {
 
 		if (command instanceof ExecConfiguration){
 			execConfiguration(((ExecConfiguration) command).getConfiguration());
 		} else if (command instanceof StopCurrentConfiguration){
 			stopConfiguration(currentRunContext);
+		}else if (command instanceof ShowEditConfigurationDialog){
+			showConfigurationDialog();
 		} else {
 			throw new IllegalArgumentException("Unsupported command: " + command);
 		}
 
 	}
 
+	private void showConfigurationDialog() {
+		List<Configuration> allConfigurations = persistenceManager.findAllConfigurations();
+		EditConfigurationDialog dialog = new EditConfigurationDialog(allConfigurations, mainWindow);
+		dialog.setVisible(true);
+		toolbar.setConfigurations(allConfigurations);
+
+	}
+
 	private void stopConfiguration(CfgRunContext currentRunContext) {
 		statusView.stopMonitor();
-		currentRunContext.getQueue().stop();
+		if (currentRunContext != null)
+			currentRunContext.stop();
 	}
 
 	private void execConfiguration(Configuration config) {
@@ -63,17 +86,22 @@ public class ApplicationController {
 		MessageBuffer buffer = new MessageBuffer(queue.getMessageBatches());
 
 		List<LoggerPlugin> loggers = pluginManager.loadLoggerPlugins();
-		loggers.stream()
-				.filter(lp -> lp.getSupportedProtocols().contains(config.getLogger().getUri().getScheme()))
-				.findAny()
-				.map(lp -> lp.createChannels(config.getLogger()))
-				.ifPresent(channels -> {
-					channels.forEach(c -> c.getMessages().subscribe(queue::process));
-					currentRunContext = new CfgRunContext(queue, buffer, channels);
-					statusView.startMonitor(currentRunContext);
-					logView.startShowing(currentRunContext.getBuffer(), config.getFormat());
-					connectionView.showActiveChannels(channels);
-				});
+
+		List<Channel> channels = config.getLogger().stream().flatMap(loggerConf ->
+				loggers.stream()
+						.filter(lp -> lp.getSupportedProtocols().contains(loggerConf.getUri().getScheme()))
+						.findAny().stream()
+						.flatMap(lp -> lp.createChannels(loggerConf, (channelName) -> new StatefulLogParser(channelName, config.getFormat())).stream())
+		).collect(Collectors.toList());
+
+
+		if (!channels.isEmpty()){
+			List<Disposable> disposables = channels.stream().map(c -> c.getMessages().subscribe(queue::process)).collect(Collectors.toList());
+			currentRunContext = new CfgRunContext(queue, buffer, channels, disposables);
+			statusView.startMonitor(currentRunContext);
+			logView.startShowing(currentRunContext.getBuffer(), config.getFormat());
+			connectionView.showActiveChannels(channels);
+		}
 	}
 
 }

@@ -22,6 +22,8 @@ public class MlogApplication {
 		module.start();
 
 		module.getMainWindow().setVisible(true);
+		Runtime.getRuntime().addShutdownHook(
+				new Thread(() -> module.getApplicationController().destroyApplication()));
 
 		log.info("App Startup time: {} ms", ManagementFactory.getRuntimeMXBean().getUptime() - vmStartTime);
 	}

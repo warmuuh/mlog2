@@ -1,6 +1,8 @@
 package mlog.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import javax.inject.Singleton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -10,10 +12,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.RowFilter;
+import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableRowSorter;
 import mlog.ctrl.rt.MessageBuffer;
 import mlog.domain.LoggerFormat;
-import mlog.domain.Message;
+import mlog.ctrl.rt.Message;
 import mlog.ui.components.FlatSVGIcon;
 import mlog.utils.swing.BatchedDataModel;
 
@@ -42,11 +46,30 @@ public class LogView extends JPanel {
     add(toolBar, BorderLayout.PAGE_START);
 
     table = new JTable();
+
     table.getSelectionModel().addListSelectionListener(l -> {
       Message selectedMessage = dataModel.getRowValue(table.getSelectedRow());
       logDetailView.showDetails(selectedMessage);
     });
 
+
+    table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+      @Override
+      public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+      {
+        final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        String prio = dataModel.getRowValue(row).getFields().getOrDefault("prio", "INFO");
+        if ("WARN".equals(prio)) {
+          c.setForeground(Color.ORANGE);
+        } else if ("ERROR".equals(prio)) {
+          c.setForeground(Color.RED);
+        } else {
+          c.setForeground(Color.WHITE);
+        }
+
+        return c;
+      }
+    });
 
     add(new JScrollPane(table), BorderLayout.CENTER);
   }
