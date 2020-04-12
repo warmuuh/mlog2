@@ -6,10 +6,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 
+@NoArgsConstructor
 public class LoggerFormat {
   private String regex;
   private List<String> fields;

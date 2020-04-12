@@ -14,7 +14,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -29,10 +31,12 @@ import javax.swing.JToolBar;
 import lombok.extern.java.Log;
 import mlog.domain.Configuration;
 import mlog.domain.LoggerConf;
+import mlog.domain.LoggerFormat;
 import mlog.ui.components.FlatSVGIcon;
 import mlog.utils.swing.Bindings;
 import mlog.utils.swing.GridBagConstraintHelper;
 import mlog.utils.swing.SwingDsl;
+import org.apache.commons.lang3.StringUtils;
 
 public class EditConfigurationDialog extends JDialog {
 
@@ -62,8 +66,28 @@ public class EditConfigurationDialog extends JDialog {
     JPanel leftSide = new JPanel();
     leftSide.setLayout(new BorderLayout());
     JToolBar toolBar = new JToolBar();
-    toolBar.add(new JButton(new FlatSVGIcon("icons/add.svg")));
-    toolBar.add(new JButton(new FlatSVGIcon("icons/remove.svg")));
+    toolBar.add(iconBtn("icons/add.svg", () -> {
+      String name = JOptionPane.showInputDialog(this, "Add new Configuration...");
+      if(StringUtils.isBlank(name))
+        return;
+      Configuration configuration = new Configuration(UUID.randomUUID().toString(), name,
+          new LinkedList<>(), new LoggerFormat("(?<message>.*)"));
+      configurations.add(configuration);
+      configurationList.setListData(configurations.toArray(new Configuration[]{}));
+      configurationList.setSelectedValue(configuration, true);
+      showOptionsFor(configuration);
+    }));
+
+    toolBar.add(iconBtn("icons/remove.svg", () -> {
+      if (configurationList.getSelectedValue() != null){
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, "Remove configuration?")){
+          configurations.remove(configurationList.getSelectedValue());
+          configurationList.setSelectedValue(null, true);
+          configurationList.setListData(configurations.toArray(new Configuration[]{}));
+        }
+      }
+    }));
+
     leftSide.add(toolBar, BorderLayout.PAGE_START);
     configurationList = new JList<>();
     configurationList.setListData(configurations.toArray(new Configuration[]{}));
@@ -90,6 +114,8 @@ public class EditConfigurationDialog extends JDialog {
     optionPane.removeAll();
     bindings.clear();
     if (configuration == null){
+      optionPane.doLayout();
+      optionPane.revalidate();
       return;
     }
 
@@ -107,6 +133,9 @@ public class EditConfigurationDialog extends JDialog {
     listBtns.setLayout(new BoxLayout(listBtns, BoxLayout.LINE_AXIS));
     listBtns.add(iconBtn("icons/add.svg", () -> {
       String loggerUri = JOptionPane.showInputDialog(this, "Enter Logger Uri");
+      if(StringUtils.isBlank(loggerUri))
+        return;
+
       try {
         URI uri = new URI(loggerUri);
         configuration.getLogger().add(new LoggerConf(uri));

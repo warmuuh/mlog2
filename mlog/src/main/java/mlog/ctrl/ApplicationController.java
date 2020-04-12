@@ -43,14 +43,17 @@ public class ApplicationController {
 
 
 	@PostConstruct
-	public void initApplication() {
-		toolbar.setConfigurations(persistenceManager.findAllConfigurations());
+	public void setupApplication(){
 		toolbar.OnCommand.add(this::handleCommand);
 	}
 
+	public void initApplication() {
+		toolbar.setConfigurations(persistenceManager.findAllConfigurations());
+	}
 
 	public void destroyApplication(){
 		stopConfiguration(currentRunContext);
+		persistenceManager.storeAll();
 	}
 
 	public void handleCommand(AppCommand command) {
@@ -71,6 +74,7 @@ public class ApplicationController {
 		List<Configuration> allConfigurations = persistenceManager.findAllConfigurations();
 		EditConfigurationDialog dialog = new EditConfigurationDialog(allConfigurations, mainWindow);
 		dialog.setVisible(true);
+		persistenceManager.storeAll();
 		toolbar.setConfigurations(allConfigurations);
 
 	}

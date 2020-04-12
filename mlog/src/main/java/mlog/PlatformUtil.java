@@ -30,11 +30,11 @@ public class PlatformUtil {
 
 	private static String getOsSpecificAppDataFolder(String filename) {
 		if (SystemUtils.IS_OS_WINDOWS) {
-			return Paths.get(System.getenv("LOCALAPPDATA"), "Milkman", filename).toString();
+			return Paths.get(System.getenv("LOCALAPPDATA"), "Mlog", filename).toString();
 		} else if (SystemUtils.IS_OS_MAC) {
-			return Paths.get(System.getProperty("user.home"), "Library", "Application Support", "Milkman", filename).toString();
+			return Paths.get(System.getProperty("user.home"), "Library", "Application Support", "Mlog", filename).toString();
 		} else if (SystemUtils.IS_OS_LINUX) {
-			return Paths.get(System.getProperty("user.home"), ".milkman", filename).toString();
+			return Paths.get(System.getProperty("user.home"), ".mlog", filename).toString();
 		}
 		
 		return filename;

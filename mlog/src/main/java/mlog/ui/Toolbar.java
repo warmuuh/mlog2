@@ -82,8 +82,9 @@ public class Toolbar extends JToolBar {
 
   public void setConfigurations(List<Configuration> allConfigurations) {
     configSelect.removeAllItems();
+
     ConfigComboEntry item = new ConfigComboEntry("Edit Configurations...", null);
-    item.OnSelect.add(() -> OnCommand.invoke(new ShowEditConfigurationDialog()));
+
     configSelect.addItem(item);
     configSelect.addItem(new ConfigComboEntry(null, null)); //separator
     allConfigurations.forEach(c -> configSelect.addItem(new ConfigComboEntry(c.getName(), c)));
@@ -92,6 +93,8 @@ public class Toolbar extends JToolBar {
     if (allConfigurations.size() > 0) {
       configSelect.setSelectedIndex(2);
     }
+    // we have to do it out of order bc otherwise, addItem selects the item directly and opens the dialog
+    item.OnSelect.add(() -> OnCommand.invoke(new ShowEditConfigurationDialog()));
   }
 
   @Value

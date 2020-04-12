@@ -63,6 +63,7 @@ public class StatusView extends JPanel {
 
 
   public void stopMonitor(){
-    monitoringThread.cancel(true);
+    if (monitoringThread != null)
+      monitoringThread.cancel(true);
   }
 }

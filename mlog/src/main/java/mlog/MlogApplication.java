@@ -20,7 +20,7 @@ public class MlogApplication {
 
 		MainModule module = new MainModule();
 		module.start();
-
+		module.getApplicationController().initApplication();
 		module.getMainWindow().setVisible(true);
 		Runtime.getRuntime().addShutdownHook(
 				new Thread(() -> module.getApplicationController().destroyApplication()));
