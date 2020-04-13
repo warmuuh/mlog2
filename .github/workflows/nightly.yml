@@ -37,4 +37,4 @@ jobs:
       - name: Package
         run: mvn -B package -DexcludedGroups=ui
       - name: Deploy to nightly
-        run: mvn --% -B de.jutzig:github-release-plugin:release@deploy-nightly -pl mlog￿-dist
+        run: mvn --% -B de.jutzig:github-release-plugin:release@deploy-nightly -pl mlog-dist
