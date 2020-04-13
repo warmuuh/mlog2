@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
   <key>CFBundleGetInfoString</key>
-  <string>Milkman</string>
+  <string>Mlog</string>
   <key>CFBundleExecutable</key>
-  <string>Milkman</string>
+  <string>Mlog</string>
   <key>CFBundleIdentifier</key>
-  <string>milkman</string>
+  <string>mlog</string>
   <key>CFBundleName</key>
-  <string>Milkman</string>
+  <string>Mlog</string>
   <key>CFBundleIconFile</key>
-  <string>Milkman</string>
+  <string>Mlog</string>
   <key>CFBundleShortVersionString</key>
   <string>1.0</string>
   <key>CFBundleInfoDictionaryVersion</key>

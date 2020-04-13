@@ -14,7 +14,7 @@
 			<outputDirectory />
 			<filtered>false</filtered>
 			<excludes>
-				<exclude>**/Milkman</exclude>
+				<exclude>**/Mlog</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
@@ -23,12 +23,12 @@
 			<lineEnding>unix</lineEnding>
 			<fileMode>744</fileMode>
 			<includes>
-				<include>**/Milkman</include>
+				<include>**/Mlog</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>target/jre-macos64</directory>
-			<outputDirectory>/Milkman.app/Contents/Resources/jre</outputDirectory>
+			<outputDirectory>/Mlog.app/Contents/Resources/jre</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
@@ -38,7 +38,7 @@
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
-				<include>com.github.warmuuh:milkman</include>
+				<include>com.github.warmuuh:mlog</include>
 			</includes>
 			<binaries>
 				<outputDirectory>/Milkman.app/Contents/Resources</outputDirectory>
@@ -51,19 +51,12 @@
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
-				<include>com.github.warmuuh:milkman-rest</include>
-				<include>com.github.warmuuh:milkman-note</include>
-				<include>com.github.warmuuh:milkman-scripting</include>
-				<include>com.github.warmuuh:milkman-explore</include>
-				<include>com.github.warmuuh:milkman-jdbc</include>
-				<include>com.github.warmuuh:milkman-sync-git</include>
-				<include>com.github.warmuuh:milkman-privatebin</include>
-				<include>com.github.warmuuh:milkman-graphql</include>
+				<include>com.github.warmuuh:mlog-k8s</include>
 			</includes>
 			<binaries>
 				<unpack>false</unpack>
 				<outputFileNameMapping>${module.artifactId}.${module.extension}</outputFileNameMapping>
-				<outputDirectory>/Milkman.app/Contents/Resources/plugins</outputDirectory>
+				<outputDirectory>/Mlog.app/Contents/Resources/plugins</outputDirectory>
 				<includeDependencies>false</includeDependencies>
 			</binaries>
 		</moduleSet>

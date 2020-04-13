@@ -2,9 +2,11 @@ package mlog.ui;
 
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
+import java.awt.Taskbar;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -17,6 +19,8 @@ public class MainWindow extends JFrame {
 
   public MainWindow(Toolbar toolbar, ConnectionView connectionView, LogView logView, LogDetailView logDetailView, StatusView statusView) throws HeadlessException {
     super("Mlog");
+
+    setIcon();
 
     setLayout(new BorderLayout(5, 5));
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,6 +52,18 @@ public class MainWindow extends JFrame {
 
     pack();
     setSize(1200, 800);
+  }
+
+  private void setIcon() {
+    setIconImage(new ImageIcon(getClass().getResource("/mlog-icon.png")).getImage());
+    try {
+      //doing it via AWT to support icon on macOs:
+      var awtIcon = java.awt.Toolkit.getDefaultToolkit().getImage(getClass().getResource("/mlog-icon.png"));
+      Taskbar awtTaskbar = Taskbar.getTaskbar();
+      awtTaskbar.setIconImage(awtIcon);
+    } catch (final Throwable e) {
+      /* silently fail */
+    }
   }
 
 }

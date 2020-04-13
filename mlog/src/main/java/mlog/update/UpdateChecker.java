@@ -15,7 +15,7 @@ public class UpdateChecker {
 
 	private String currentVersion;
 	
-	private GithubReleaseChecker releaseChecker = new GithubReleaseChecker("warmuuh", "mlog");
+	private GithubReleaseChecker releaseChecker = new GithubReleaseChecker("warmuuh", "mlog2");
 	
 	public void checkForUpdateAsync() {
 		new Thread(() -> {

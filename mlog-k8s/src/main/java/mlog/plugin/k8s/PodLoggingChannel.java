@@ -15,7 +15,7 @@ import reactor.core.scheduler.Schedulers;
 
 @RequiredArgsConstructor
 @Slf4j
-public class PodLoggingChannel implements Channel {
+public abstract class PodLoggingChannel implements Channel {
 
   private final String podname;
   private final LoggerConf config;
@@ -47,8 +47,9 @@ public class PodLoggingChannel implements Channel {
       });
 
       if (proc == null) {
-        initProc();
+        proc = initProc(podname);
       }
+
       BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 
 //      log.info("poll");
@@ -88,10 +89,6 @@ public class PodLoggingChannel implements Channel {
 //        .map(parser::parse);
   }
 
-  @SneakyThrows
-  private void initProc() {
-    log.info("Open channel to " + podname);
-    proc = Runtime.getRuntime()
-        .exec("kubectl logs -f " + podname + "  -n ebayk -c logger");
-  }
+
+  protected abstract Process initProc(String podname);
 }

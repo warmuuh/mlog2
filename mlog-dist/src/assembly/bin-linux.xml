@@ -5,7 +5,7 @@
 	<formats>
 		<format>tgz</format>
 	</formats>
-	<baseDirectory>milkman-${project.version}</baseDirectory>
+	<baseDirectory>mlog-${project.version}</baseDirectory>
 	<!-- <includeBaseDirectory>false</includeBaseDirectory> -->
 
 	<fileSets>
@@ -41,7 +41,7 @@
 
 			<!-- Now, select which projects to include in this module-set. -->
 			<includes>
-				<include>com.github.warmuuh:milkman</include>
+				<include>com.github.warmuuh:mlog</include>
 			</includes>
 			<binaries>
 				<outputDirectory></outputDirectory>
@@ -54,7 +54,7 @@
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
-				<include>com.github.warmuuh:milkman-rest</include>
+				<include>com.github.warmuuh:mlog-k8s</include>
 			</includes>
 			<binaries>
 				<unpack>false</unpack>

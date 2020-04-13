@@ -48,6 +48,9 @@ public class LogView extends JPanel {
     table = new JTable();
 
     table.getSelectionModel().addListSelectionListener(l -> {
+      if (table.getSelectedRow() < 0)
+        return;
+
       Message selectedMessage = dataModel.getRowValue(table.getSelectedRow());
       logDetailView.showDetails(selectedMessage);
     });

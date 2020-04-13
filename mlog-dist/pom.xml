@@ -10,8 +10,8 @@
 	<artifactId>mlog-dist</artifactId>
 
 	<scm>
-		<url>https://github.com/warmuuh/mlog</url>
-		<connection>scm:git:https://github.com/warmuuh/mlog</connection>
+		<url>https://github.com/warmuuh/mlog2</url>
+		<connection>scm:git:https://github.com/warmuuh/mlog2</connection>
 		<tag>${project.version}</tag>
 	</scm>
 
@@ -34,55 +34,55 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>com.akathist.maven.plugins.launch4j</groupId>
-				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>1.7.25</version>
-				<executions>
-					<execution>
-						<id>l4j-clui</id>
-						<phase>package</phase>
-						<goals>
-							<goal>launch4j</goal>
-						</goals>
-						<configuration>
-							<headerType>gui</headerType>
-							<outfile>target/mlog.exe</outfile>
-							<errTitle>Mlog</errTitle>
-							<icon>src/bin/win/mlog.ico</icon>
-							<classPath>
-								<mainClass>mlog.MlogApplication</mainClass>
-								<addDependencies>false</addDependencies>
-								<preCp>plugins/*;mlog.jar</preCp>
-							</classPath>
-							<jre>
-								<path>.\jre-win64\</path>
-								<!-- <minVersion>11</minVersion> -->
-								<!-- <maxVersion>1.9.0</maxVersion> -->
-								<opts>
-									<opt>-XX:SharedArchiveFile=app-cds.jsa</opt>
-									<opt>-client</opt>
-									<opt>-XX:+UseCompressedOops</opt>
-									<opt>-XX:+UseCompressedClassPointers</opt>
-<!-- 									<opt>-Xlog:class+load:file=cds3.log</opt> -->
+<!--			<plugin>-->
+<!--				<groupId>com.akathist.maven.plugins.launch4j</groupId>-->
+<!--				<artifactId>launch4j-maven-plugin</artifactId>-->
+<!--				<version>1.7.25</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>l4j-clui</id>-->
+<!--						<phase>package</phase>-->
+<!--						<goals>-->
+<!--							<goal>launch4j</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<headerType>gui</headerType>-->
+<!--							<outfile>target/mlog.exe</outfile>-->
+<!--							<errTitle>Mlog</errTitle>-->
+<!--							<icon>src/bin/win/mlog.ico</icon>-->
+<!--							<classPath>-->
+<!--								<mainClass>mlog.MlogApplication</mainClass>-->
+<!--								<addDependencies>false</addDependencies>-->
+<!--								<preCp>plugins/*;mlog.jar</preCp>-->
+<!--							</classPath>-->
+<!--							<jre>-->
+<!--								<path>.\jre-win64\</path>-->
+<!--								&lt;!&ndash; <minVersion>11</minVersion> &ndash;&gt;-->
+<!--								&lt;!&ndash; <maxVersion>1.9.0</maxVersion> &ndash;&gt;-->
+<!--								<opts>-->
+<!--									<opt>-XX:SharedArchiveFile=app-cds.jsa</opt>-->
+<!--									<opt>-client</opt>-->
+<!--									<opt>-XX:+UseCompressedOops</opt>-->
+<!--									<opt>-XX:+UseCompressedClassPointers</opt>-->
+<!--&lt;!&ndash; 									<opt>-Xlog:class+load:file=cds3.log</opt> &ndash;&gt;-->
 
-								</opts>
-							</jre>
-							<versionInfo>
-								<fileVersion>2.0.0.0</fileVersion>
-								<txtFileVersion>2.0.0.0</txtFileVersion>
-								<fileDescription>Mlog</fileDescription>
-								<copyright>copyright</copyright>
-								<productVersion>2.0.0.0</productVersion>
-								<txtProductVersion>2.0.0.0</txtProductVersion>
-								<productName>Mlog</productName>
-								<internalName>mlog</internalName>
-								<originalFilename>mlog.exe</originalFilename>
-							</versionInfo>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+<!--								</opts>-->
+<!--							</jre>-->
+<!--							<versionInfo>-->
+<!--								<fileVersion>2.0.0.0</fileVersion>-->
+<!--								<txtFileVersion>2.0.0.0</txtFileVersion>-->
+<!--								<fileDescription>Mlog</fileDescription>-->
+<!--								<copyright>copyright</copyright>-->
+<!--								<productVersion>2.0.0.0</productVersion>-->
+<!--								<txtProductVersion>2.0.0.0</txtProductVersion>-->
+<!--								<productName>Mlog</productName>-->
+<!--								<internalName>mlog</internalName>-->
+<!--								<originalFilename>mlog.exe</originalFilename>-->
+<!--							</versionInfo>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 			<!-- <plugin> -->
 			<!-- <groupId>sh.tak.appbundler</groupId> -->
 			<!-- <artifactId>appbundle-maven-plugin</artifactId> -->
@@ -120,7 +120,6 @@
 						<addModule>java.logging</addModule>
 						<addModule>java.management</addModule>
 						<addModule>java.naming</addModule>
-						<addModule>java.scripting</addModule>
 						<addModule>java.sql</addModule>
 						<addModule>java.xml</addModule>
 						<addModule>java.rmi</addModule>
@@ -130,7 +129,6 @@
 						<addModule>jdk.unsupported</addModule>
 						<addModule>jdk.unsupported.desktop</addModule>
 						<addModule>jdk.xml.dom</addModule>
-						<addModule>jdk.scripting.nashorn</addModule>
 						<addModule>java.security.jgss</addModule>
 					</addModules>
 					<options>
@@ -253,32 +251,6 @@
 							</descriptors>
 						</configuration>
 					</execution>
-					<execution>
-						<id>plugin-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>${project.artifactId}-plugins</finalName>
-							<descriptors>
-								<descriptor>src/assembly/plugins-bin.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-						<execution>
-						<id>assembly-cli</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>${project.artifactId}-cli</finalName>
-							<descriptors>
-								<descriptor>src/assembly/bin-cli.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -287,7 +259,7 @@
 				<version>1.4.0</version>
 				<configuration>
 					<description>
-						Release of Milkman.
+						Release of Mlog.
 						See [Changelog](/changelog.md) for changes.
 					</description>
 					<releaseName>${project.version}</releaseName>
@@ -332,7 +304,7 @@
 							<tag>nightly</tag>
 							<releaseName>Nightly Build</releaseName>
 							<description>
-								Nightly Release of Milkman.
+								Nightly Release of Mlog.
 								See [Changelog](/changelog.md) for changes.
 							</description>
 						</configuration>

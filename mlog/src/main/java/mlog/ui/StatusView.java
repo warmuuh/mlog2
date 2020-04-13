@@ -15,17 +15,24 @@ import mlog.ctrl.rt.CfgRunContext;
 public class StatusView extends JPanel {
 
 
-  private final JProgressBar progressBar;
-  private final JLabel bufferSize;
+  private final JProgressBar queueBar;
+  private final JProgressBar bufferSize;
+  private final JLabel msgPerSec;
 
   public StatusView() {
-    bufferSize = new JLabel("0");
     add(new JLabel("Buffer Size:"));
+    bufferSize = new JProgressBar(0, 100);
     add(bufferSize);
 
-    progressBar = new JProgressBar(0, 100);
+
+    add(new JLabel("Msg Per Sec:"));
+    msgPerSec = new JLabel("0");
+    add(msgPerSec);
+
+
+    queueBar = new JProgressBar(0, 100);
     add(new JLabel("Queue Fill State:"));
-    add(progressBar);
+    add(queueBar);
   }
 
   SwingWorker<String, String> monitoringThread;
@@ -45,9 +52,15 @@ public class StatusView extends JPanel {
     @Override
     protected void process(List<String> chunks) {
       double perc = (double) context.getQueue().getQueueSize() / context.getQueue().getBufferSize();
-      progressBar.setValue((int)(perc * 100.0));
-      bufferSize.setText(""+context.getBuffer().getBuffer().size());
+      queueBar.setValue((int)(perc * 100.0));
+      queueBar.invalidate();
+
+      double buffPerc = (double) context.getBuffer().getBuffer().size() / context.getBuffer().getBuffer().maxSize();
+      bufferSize.setValue((int)(buffPerc * 100.0));
       bufferSize.invalidate();
+
+      msgPerSec.setText("" + context.getBuffer().getMsgPerSec());
+      msgPerSec.invalidate();
     }
   };
 

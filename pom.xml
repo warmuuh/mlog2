@@ -20,10 +20,10 @@
 
 
 	<description>multi log stream analyzer</description>
-	<url>https://github.com/warmuuh/mlog</url>
+	<url>https://github.com/warmuuh/mlog2</url>
 	<scm>
-		<url>https://github.com/warmuuh/mlog</url>
-		<connection>scm:git:https://github.com/warmuuh/mlog</connection>
+		<url>https://github.com/warmuuh/mlog2</url>
+		<connection>scm:git:https://github.com/warmuuh/mlog2</connection>
 		<tag>${project.version}</tag>
 	</scm>
 
@@ -43,6 +43,11 @@
 		<!-- <scope>system</scope> -->
 		<!-- <systemPath>${JAVA_HOME}/lib/tools.jar</systemPath> -->
 		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.assertj</groupId>
@@ -147,7 +152,7 @@
 					</annotationProcessors>
 				</configuration>
 			</plugin>
-			<plugin>${
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.4</version>

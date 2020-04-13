@@ -16,7 +16,12 @@ public class BatchedDataModel extends AbstractTableModel{
     this.columnNames = new LinkedList<>();
     columnNames.add("origin");
     columnNames.addAll(columns);
-    buffer.onRowsAdded.add(rows -> fireTableRowsInserted(getRowCount() -1 -rows.size(), getRowCount()-1));
+    buffer.onRowsAdded.add((rows, overflow) -> {
+      if (overflow > 0) {
+        fireTableRowsDeleted(0, overflow);
+      }
+      fireTableRowsInserted(getRowCount() - 1 - rows.size(), getRowCount() - 1);
+    });
   }
 
 

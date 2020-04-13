@@ -12,6 +12,8 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
@@ -28,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import mlog.domain.Configuration;
 import mlog.domain.LoggerConf;
@@ -166,6 +169,28 @@ public class EditConfigurationDialog extends JDialog {
     });
 
     loggerList.setListData(configuration.getLogger().toArray(new LoggerConf[]{}));
+
+    loggerList.addMouseListener(new MouseAdapter() {
+      @SneakyThrows
+      public void mouseClicked(MouseEvent evt) {
+        JList list = (JList)evt.getSource();
+        if (evt.getClickCount() == 2) {
+          // Double-click detected
+          int index = list.locationToIndex(evt.getPoint());
+          if (index >= 0){
+            LoggerConf val = configuration.getLogger().get(index);
+            String loggerUri = JOptionPane.showInputDialog(EditConfigurationDialog.this, "Enter Logger Uri", val.getUri().toString());
+            if(StringUtils.isBlank(loggerUri))
+              return;
+
+            val.setUri(new URI(loggerUri));
+
+          }
+        }
+      }
+    });
+
+
 
     optionPane.add(loggerList, c.next(8, 2, true));
 
