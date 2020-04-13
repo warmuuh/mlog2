@@ -21,9 +21,9 @@ public class UpdateChecker {
 		new Thread(() -> {
 			try {
 				releaseChecker.getNewerRelease(currentVersion).ifPresent(newVersion -> {
-//					toaster.showToast("New Version available: Milkman " + newVersion, "What's new?", e -> {
+//					toaster.showToast("New Version available: Mlog " + newVersion, "What's new?", e -> {
 //						try {
-//							Desktop.getDesktop().browse(new URI("https://github.com/warmuuh/milkman/blob/master/changelog.md"));
+//							Desktop.getDesktop().browse(new URI("https://github.com/warmuuh/mlog2/blob/master/changelog.md"));
 //						} catch (IOException | URISyntaxException e1) {
 //							e1.printStackTrace();
 //						}

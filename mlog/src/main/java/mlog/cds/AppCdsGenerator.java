@@ -24,7 +24,7 @@ public class AppCdsGenerator {
 		new Thread(() -> {
 			
 			if (!PlatformUtil.isCurrentDirWritable()) {
-				log.error("Current directory is not writeable, please restart milkman as admin");
+				log.error("Current directory is not writeable, please restart mlog as admin");
 				return;
 			}
 			

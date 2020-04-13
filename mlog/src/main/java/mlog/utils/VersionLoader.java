@@ -13,7 +13,7 @@ public class VersionLoader {
         String currentVersion = "0";
         try {
             Properties p = new Properties();
-            InputStream is = VersionLoader.class.getResourceAsStream("/META-INF/maven/com.github.warmuuh/milkman/pom.properties");
+            InputStream is = VersionLoader.class.getResourceAsStream("/META-INF/maven/com.github.warmuuh/mlog/pom.properties");
             if (is != null) {
                 p.load(is);
                 currentVersion = p.getProperty("version", "");
