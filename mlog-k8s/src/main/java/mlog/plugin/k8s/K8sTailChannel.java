@@ -19,7 +19,7 @@ public class K8sTailChannel extends PodLoggingChannel {
   @Override
   @SneakyThrows
   protected Process initProc(String podname) {
-    String command = "kubectl exec -t -n ebayk " + podname + "  -- /usr/bin/tail -f " + file;
+    String command = "/usr/local/bin/kubectl exec -t -n ebayk " + podname + "  -- /usr/bin/tail -f " + file;
     log.info("Exec: {} ", command);
     return Runtime.getRuntime()
         .exec(command);

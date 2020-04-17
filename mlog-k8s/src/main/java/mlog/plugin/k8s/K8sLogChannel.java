@@ -18,7 +18,7 @@ public class K8sLogChannel extends PodLoggingChannel {
   protected Process initProc(String podname) {
     log.info("Open channel to " + podname);
     return Runtime.getRuntime()
-        .exec("kubectl logs -f " + podname + "  -n ebayk -c logger");
+        .exec("/usr/local/bin/kubectl logs -f " + podname + "  -n ebayk -c logger");
   }
 
 }

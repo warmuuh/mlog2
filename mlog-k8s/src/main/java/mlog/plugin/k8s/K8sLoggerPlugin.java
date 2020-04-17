@@ -38,7 +38,7 @@ public class K8sLoggerPlugin implements LoggerPlugin {
 
   @SneakyThrows
   public List<String> getPods(URI kubeUri){
-    String command = "kubectl get pods -n ebayk --selector=app=" + kubeUri.getHost() + " -o name";
+    String command = "/usr/local/bin/kubectl get pods -n ebayk --selector=app=" + kubeUri.getHost() + " -o name";
     log.info("Exec: {}", command);
     Process listPodProc = Runtime.getRuntime()
         .exec(command);

@@ -14,6 +14,7 @@ import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.FileSize;
+import java.io.File;
 import mlog.PlatformUtil;
 
 public class LogbackConfiguration extends ContextAwareBase implements Configurator {
@@ -67,7 +68,9 @@ public class LogbackConfiguration extends ContextAwareBase implements Configurat
 	
 	private void setupFileAppender(LoggerContext loggerContext) {
 		RollingFileAppender<ILoggingEvent> fa = new RollingFileAppender<ILoggingEvent>();
-		fa.setFile(PlatformUtil.getWritableLocationForFile("errors.log"));
+		String location = PlatformUtil.getWritableLocationForFile("errors.log");
+		new File(location).mkdirs();
+		fa.setFile(location);
 		
 		SizeBasedTriggeringPolicy<ILoggingEvent> sizePolicy = new SizeBasedTriggeringPolicy<ILoggingEvent>();
 		sizePolicy.setContext(loggerContext);

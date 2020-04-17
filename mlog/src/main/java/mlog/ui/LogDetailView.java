@@ -12,16 +12,19 @@ import mlog.ctrl.rt.Message;
 public class LogDetailView extends JPanel {
 
   private final JTextArea detailsText;
+  private final JScrollPane scrollPane;
 
   public LogDetailView() {
     setLayout(new BorderLayout());
     setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
     detailsText = new JTextArea();
-    add(new JScrollPane(detailsText), BorderLayout.CENTER);
+    scrollPane = new JScrollPane(detailsText);
+    add(scrollPane, BorderLayout.CENTER);
   }
 
   public void showDetails(Message message){
     detailsText.setText(message.getFields().toString());
+    detailsText.setCaretPosition(0);
   }
 
 }

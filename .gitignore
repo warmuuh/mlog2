@@ -10,3 +10,4 @@ errors.log
 *.iml
 *.log
 /configurations.json
+.DS_Store
