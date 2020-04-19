@@ -1,10 +1,13 @@
 package mlog.plugin.k8s;
 
+import static mlog.utils.UrlUtils.splitQuery;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
@@ -24,12 +27,13 @@ public class K8sLoggerPlugin implements LoggerPlugin {
 
   @Override
   public List<Channel> createChannels(LoggerConf loggerConfig, Function<String, StatefulLogParser> parserFactory) {
-    List<String> pods = getPods(loggerConfig.getUri());
+    Map<String, List<String>> options = splitQuery(loggerConfig.getUri().getQuery());
+    List<String> pods = getPods(loggerConfig.getUri(), options);
     switch (loggerConfig.getUri().getScheme()){
-      case "k8s":  return pods.stream().map(p -> new K8sLogChannel(p, loggerConfig, parserFactory.apply(p)))
+      case "k8s":  return pods.stream().map(p -> new K8sLogChannel(p, options, parserFactory.apply(p)))
           .collect(Collectors.toList());
 
-      case "k8s+tail": return pods.stream().map(p -> new K8sTailChannel(p, loggerConfig.getUri().getPath(), loggerConfig, parserFactory.apply(p)))
+      case "k8s+tail": return pods.stream().map(p -> new K8sTailChannel(p, loggerConfig.getUri().getPath(), options, parserFactory.apply(p)))
           .collect(Collectors.toList());
     }
     throw new UnsupportedOperationException("Unsupported schema: " + loggerConfig.getUri().getScheme());
@@ -37,11 +41,8 @@ public class K8sLoggerPlugin implements LoggerPlugin {
 
 
   @SneakyThrows
-  public List<String> getPods(URI kubeUri){
-    String command = "/usr/local/bin/kubectl get pods -n ebayk --selector=app=" + kubeUri.getHost() + " -o name";
-    log.info("Exec: {}", command);
-    Process listPodProc = Runtime.getRuntime()
-        .exec(command);
+  public List<String> getPods(URI kubeUri, Map<String, List<String>> options){
+    Process listPodProc = new KubectlCommand("get pods -o name --selector=app=" + kubeUri.getHost(), options).execute();
 
     List<String> pods = new LinkedList<>();
     try(BufferedReader input = new BufferedReader(new InputStreamReader(listPodProc.getInputStream()))) {

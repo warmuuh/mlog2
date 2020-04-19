@@ -39,10 +39,18 @@ public class LogView extends JPanel {
     JToolBar toolBar = new JToolBar();
     toolBar.add(new JLabel("Filter:"));
     filterExpr = new JTextField();
+    filterExpr.addActionListener(e -> toggleFilter());
     toolBar.add(filterExpr);
+
+
     JButton findBtn = new JButton(new FlatSVGIcon("icons/find.svg"));
     findBtn.addActionListener(e -> toggleFilter());
     toolBar.add(findBtn);
+
+    JButton clearFilter = new JButton(new FlatSVGIcon("icons/clear.svg"));
+    clearFilter.addActionListener(e -> clearFilter());
+    toolBar.add(clearFilter);
+
     add(toolBar, BorderLayout.PAGE_START);
 
     table = new JTable();
@@ -51,7 +59,7 @@ public class LogView extends JPanel {
       if (table.getSelectedRow() < 0)
         return;
 
-      Message selectedMessage = dataModel.getRowValue(table.getSelectedRow());
+      Message selectedMessage = dataModel.getRowValue(table.convertRowIndexToModel(table.getSelectedRow()));
       logDetailView.showDetails(selectedMessage);
     });
 
@@ -77,11 +85,18 @@ public class LogView extends JPanel {
     add(new JScrollPane(table), BorderLayout.CENTER);
   }
 
+
+
   public void startShowing(MessageBuffer buffer, LoggerFormat format) {
     dataModel = new BatchedDataModel(buffer, format.getFields());
     table.setModel(dataModel);
     sorter = new TableRowSorter<>(dataModel);
     table.setRowSorter(sorter);
+  }
+
+
+  private void clearFilter() {
+    sorter.setRowFilter(null);
   }
 
   public void toggleFilter(){

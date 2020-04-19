@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import java.net.URL;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +17,10 @@ import lombok.experimental.UtilityClass;
 public class UrlUtils {
 
   public static Map<String, List<String>> splitQuery(String queryString) {
+    if (queryString == null) {
+      return Collections.emptyMap();
+    }
+
     return Arrays.stream(queryString.split("&"))
         .map(UrlUtils::splitQueryParameter)
         .collect(Collectors.groupingBy(

@@ -17,6 +17,7 @@ import javax.swing.JToolBar;
 import lombok.Value;
 import mlog.domain.Configuration;
 import mlog.ui.commands.AppCommand;
+import mlog.ui.commands.AppCommand.ClearBuffer;
 import mlog.ui.commands.AppCommand.ExecConfiguration;
 import mlog.ui.commands.AppCommand.ShowEditConfigurationDialog;
 import mlog.ui.commands.AppCommand.StopCurrentConfiguration;
@@ -78,6 +79,10 @@ public class Toolbar extends JToolBar {
     JButton stop = new JButton(new FlatSVGIcon("icons/suspend.svg"));
     stop.addActionListener(e -> OnCommand.invoke(new StopCurrentConfiguration()));
     add(stop);
+
+    JButton clear = new JButton(new FlatSVGIcon("icons/clear.svg"));
+    clear.addActionListener(e -> OnCommand.invoke(new ClearBuffer()));
+    add(clear);
   }
 
   public void setConfigurations(List<Configuration> allConfigurations) {

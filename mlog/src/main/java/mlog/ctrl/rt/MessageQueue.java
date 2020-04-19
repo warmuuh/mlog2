@@ -33,4 +33,8 @@ public class MessageQueue {
   public void stop(){
     processor.cancel();
   }
+
+  public boolean isAlive() {
+    return !processor.isDisposed();
+  }
 }

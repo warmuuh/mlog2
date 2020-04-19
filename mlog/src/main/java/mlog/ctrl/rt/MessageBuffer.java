@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mlog.utils.Counter;
 import mlog.utils.Event;
+import mlog.utils.Event0;
 import mlog.utils.Event2;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import reactor.core.publisher.Flux;
@@ -14,6 +15,8 @@ public class MessageBuffer {
   protected CircularFifoQueue<Message> buffer = new CircularFifoQueue<Message>(50_000);
 
   public Event2<List<Message>, Integer> onRowsAdded = new Event2<>();
+  public Event<Integer> onClear = new Event<>();
+
 
   private Counter msgPerSec = new Counter(1000);
 
@@ -30,6 +33,12 @@ public class MessageBuffer {
     } catch (Throwable e) {
       e.printStackTrace();
     }
+  }
+
+  public void clearBuffer(){
+    int rowcount = buffer.size();
+    buffer.clear();
+    onClear.invoke(rowcount);
   }
 
   public long getMsgPerSec() {

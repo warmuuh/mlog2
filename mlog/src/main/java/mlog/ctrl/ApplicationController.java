@@ -20,6 +20,7 @@ import mlog.ui.MainWindow;
 import mlog.ui.StatusView;
 import mlog.ui.Toolbar;
 import mlog.ui.commands.AppCommand;
+import mlog.ui.commands.AppCommand.ClearBuffer;
 import mlog.ui.commands.AppCommand.ExecConfiguration;
 import mlog.ui.commands.AppCommand.ShowEditConfigurationDialog;
 import mlog.ui.commands.AppCommand.StopCurrentConfiguration;
@@ -62,12 +63,18 @@ public class ApplicationController {
 			execConfiguration(((ExecConfiguration) command).getConfiguration());
 		} else if (command instanceof StopCurrentConfiguration){
 			stopConfiguration(currentRunContext);
-		}else if (command instanceof ShowEditConfigurationDialog){
+		} else if (command instanceof ClearBuffer){
+			clearBuffer(currentRunContext);
+		} else if (command instanceof ShowEditConfigurationDialog){
 			showConfigurationDialog();
 		} else {
 			throw new IllegalArgumentException("Unsupported command: " + command);
 		}
 
+	}
+
+	private void clearBuffer(CfgRunContext currentRunContext) {
+		currentRunContext.getBuffer().clearBuffer();
 	}
 
 	private void showConfigurationDialog() {

@@ -17,4 +17,7 @@ public interface AppCommand {
   @Value
   class ShowEditConfigurationDialog implements  AppCommand {}
 
+  @Value
+  class ClearBuffer implements  AppCommand {}
+
 }

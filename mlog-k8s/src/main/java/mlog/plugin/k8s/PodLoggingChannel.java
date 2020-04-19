@@ -18,7 +18,6 @@ import reactor.core.scheduler.Schedulers;
 public abstract class PodLoggingChannel implements Channel {
 
   private final String podname;
-  private final LoggerConf config;
   private final StatefulLogParser parser;
 
 

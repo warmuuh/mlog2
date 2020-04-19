@@ -2,6 +2,7 @@ package mlog.ui;
 
 import java.util.List;
 import javax.inject.Singleton;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -9,17 +10,22 @@ import javax.swing.SwingWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mlog.ctrl.rt.CfgRunContext;
+import mlog.ui.components.FlatSVGIcon;
 
 @Singleton
 @Slf4j
 public class StatusView extends JPanel {
 
 
+  private final JButton status;
   private final JProgressBar queueBar;
   private final JProgressBar bufferSize;
   private final JLabel msgPerSec;
 
   public StatusView() {
+    status = new JButton(new FlatSVGIcon("icons/status_inactive.svg"));
+    add(status);
+
     add(new JLabel("Buffer Size:"));
     bufferSize = new JProgressBar(0, 100);
     add(bufferSize);
@@ -61,6 +67,9 @@ public class StatusView extends JPanel {
 
       msgPerSec.setText("" + context.getBuffer().getMsgPerSec());
       msgPerSec.invalidate();
+
+      status.setIcon(new FlatSVGIcon(context.getQueue().isAlive() ? "icons/status_active.svg" : "icons/status_inactive.svg"));
+
     }
   };
 
@@ -76,7 +85,10 @@ public class StatusView extends JPanel {
 
 
   public void stopMonitor(){
-    if (monitoringThread != null)
+    if (monitoringThread != null) {
       monitoringThread.cancel(true);
+    }
+    status.setIcon(new FlatSVGIcon("icons/status_inactive.svg"));
+
   }
 }

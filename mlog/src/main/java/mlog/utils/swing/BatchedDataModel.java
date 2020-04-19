@@ -16,12 +16,9 @@ public class BatchedDataModel extends AbstractTableModel{
     this.columnNames = new LinkedList<>();
     columnNames.add("origin");
     columnNames.addAll(columns);
-    buffer.onRowsAdded.add((rows, overflow) -> {
-      if (overflow > 0) {
-        fireTableRowsDeleted(0, overflow);
-      }
-      fireTableRowsInserted(getRowCount() - 1 - rows.size(), getRowCount() - 1);
-    });
+    buffer.onRowsAdded.add(this::onRowsAdded);
+
+    buffer.onClear.add(this::onClearBuffer);
   }
 
 
@@ -53,5 +50,16 @@ public class BatchedDataModel extends AbstractTableModel{
 
   public Message getRowValue(int rowIndex){
     return buffer.getBuffer().get(rowIndex);
+  }
+
+  private synchronized void onRowsAdded(List<Message> rows, Integer overflow) {
+    if (overflow > 0) {
+      fireTableRowsDeleted(0, overflow);
+    }
+    fireTableRowsInserted(getRowCount() - 1 - rows.size(), getRowCount() - 1);
+  }
+
+  private synchronized void onClearBuffer(Integer rowcount) {
+    fireTableRowsDeleted(0, rowcount -1);
   }
 }

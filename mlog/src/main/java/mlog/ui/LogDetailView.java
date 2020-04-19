@@ -18,6 +18,8 @@ public class LogDetailView extends JPanel {
     setLayout(new BorderLayout());
     setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
     detailsText = new JTextArea();
+    detailsText.setLineWrap(true);
+    detailsText.setWrapStyleWord(true);
     scrollPane = new JScrollPane(detailsText);
     add(scrollPane, BorderLayout.CENTER);
   }
