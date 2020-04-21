@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
@@ -42,7 +43,8 @@ public class K8sLoggerPlugin implements LoggerPlugin {
 
   @SneakyThrows
   public List<String> getPods(URI kubeUri, Map<String, List<String>> options){
-    Process listPodProc = new KubectlCommand("get pods -o name --selector=app=" + kubeUri.getHost(), options).execute();
+    Process listPodProc = new KubectlCommand("get pods  -o name --selector=app=" + kubeUri.getHost(), options).execute(
+        Optional.of("c"));
 
     List<String> pods = new LinkedList<>();
     try(BufferedReader input = new BufferedReader(new InputStreamReader(listPodProc.getInputStream()))) {
