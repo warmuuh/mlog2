@@ -60,6 +60,9 @@ public class BatchedDataModel extends AbstractTableModel{
   }
 
   private synchronized void onClearBuffer(Integer rowcount) {
+    if (rowcount == 0){
+      return;
+    }
     fireTableRowsDeleted(0, rowcount -1);
   }
 }

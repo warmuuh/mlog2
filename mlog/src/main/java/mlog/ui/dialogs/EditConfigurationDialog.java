@@ -119,6 +119,7 @@ public class EditConfigurationDialog extends JDialog {
     if (configuration == null){
       optionPane.doLayout();
       optionPane.revalidate();
+      optionPane.repaint();
       return;
     }
 
@@ -196,7 +197,7 @@ public class EditConfigurationDialog extends JDialog {
 
 
     optionPane.add(label("Format"), c.next());
-    optionPane.add(text(configuration.getFormat().getRegex(), configuration.getFormat()::setRegex, bindings));
+    optionPane.add(text(configuration.getFormat().getRegex(), configuration.getFormat()::setRegex, bindings), c.next());
 
     setupActionBtns(c);
     optionPane.doLayout();
@@ -215,6 +216,7 @@ public class EditConfigurationDialog extends JDialog {
     btns.add(button("Apply", () -> {
       bindings.apply();
       configurationList.setListData(configurations.toArray(new Configuration[]{}));
+      showOptionsFor(null);
     }));
 
     btns.add(button("Ok", () -> {

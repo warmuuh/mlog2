@@ -44,7 +44,7 @@ public class K8sLoggerPlugin implements LoggerPlugin {
   @SneakyThrows
   public List<String> getPods(URI kubeUri, Map<String, List<String>> options){
     Process listPodProc = new KubectlCommand("get pods  -o name --selector=app=" + kubeUri.getHost(), options).execute(
-        Optional.of("c"));
+        List.of("n", "namespace"));
 
     List<String> pods = new LinkedList<>();
     try(BufferedReader input = new BufferedReader(new InputStreamReader(listPodProc.getInputStream()))) {

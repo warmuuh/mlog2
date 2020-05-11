@@ -20,4 +20,10 @@ public interface AppCommand {
   @Value
   class ClearBuffer implements  AppCommand {}
 
+  @Value
+  class SetAutoscroll implements  AppCommand {
+    boolean autoscroll;
+  }
+
+
 }

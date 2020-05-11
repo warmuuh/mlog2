@@ -1,6 +1,8 @@
 package mlog.plugin.k8s;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,13 +20,13 @@ public class KubectlCommand {
   private final String executable = "/usr/local/bin/kubectl";
 
   Process execute() throws IOException {
-    return execute(Optional.empty());
+    return execute(new ArrayList<>(options.keySet()));
   }
 
-  Process execute(Optional<String> exclusionFilter) throws IOException {
+  Process execute(List<String> inclusionFilter) throws IOException {
     //for now only support 1 argvalue
     String args = options.entrySet().stream()
-        .filter(e -> exclusionFilter.stream().noneMatch(e.getKey()::equals))
+        .filter(e -> inclusionFilter.contains(e.getKey()))
         .map(e -> (e.getKey().length() == 1 ? "-" : "--") + e.getKey() + " " + e.getValue().stream().findFirst().orElse(""))
         .collect(Collectors.joining(" "));
     String commandLine = executable + " " + command + " " + args;

@@ -22,6 +22,7 @@ import mlog.ui.Toolbar;
 import mlog.ui.commands.AppCommand;
 import mlog.ui.commands.AppCommand.ClearBuffer;
 import mlog.ui.commands.AppCommand.ExecConfiguration;
+import mlog.ui.commands.AppCommand.SetAutoscroll;
 import mlog.ui.commands.AppCommand.ShowEditConfigurationDialog;
 import mlog.ui.commands.AppCommand.StopCurrentConfiguration;
 import mlog.ui.dialogs.EditConfigurationDialog;
@@ -67,6 +68,8 @@ public class ApplicationController {
 			clearBuffer(currentRunContext);
 		} else if (command instanceof ShowEditConfigurationDialog){
 			showConfigurationDialog();
+		}else if (command instanceof SetAutoscroll){
+			logView.setScrollToBottom(((SetAutoscroll) command).isAutoscroll());
 		} else {
 			throw new IllegalArgumentException("Unsupported command: " + command);
 		}

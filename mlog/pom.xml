@@ -21,6 +21,13 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>com.googlecode.cqengine</groupId>
+			<artifactId>cqengine</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+
+
+		<dependency>
 			<groupId>com.formdev</groupId>
 			<artifactId>flatlaf</artifactId>
 			<version>0.30</version>
