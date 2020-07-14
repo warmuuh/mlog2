@@ -1,16 +1,9 @@
 package mlog.ui;
 
-import com.googlecode.cqengine.attribute.Attribute;
-import com.googlecode.cqengine.attribute.support.FunctionalSimpleAttribute;
-import com.googlecode.cqengine.query.option.QueryOptions;
-import com.googlecode.cqengine.query.parser.common.ParseResult;
-import com.googlecode.cqengine.query.parser.sql.SQLParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Rectangle;
-import java.util.HashMap;
-import java.util.Map;
 import javax.inject.Singleton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,7 +12,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.RowFilter;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,6 +21,7 @@ import mlog.domain.LoggerFormat;
 import mlog.ctrl.rt.Message;
 import mlog.ui.components.FlatSVGIcon;
 import mlog.utils.swing.BatchedDataModel;
+import mlog.utils.swing.SqlRowFilter;
 
 @Singleton
 public class LogView extends JPanel {
@@ -125,37 +118,7 @@ public class LogView extends JPanel {
       sorter.setRowFilter(null);
     } else {
 //      sorter.setRowFilter(RowFilter.regexFilter(filterExpr.getText()));
-      sorter.setRowFilter(new RowFilter<BatchedDataModel, Integer>() {
-        @Override
-        public boolean include(Entry<? extends BatchedDataModel, ? extends Integer> entry) {
-          Map<String, Attribute<Entry, String>> attributes = new HashMap<>();
-          for(int i = 0; i < table.getColumnCount(); ++i){
-            String columnName = table.getColumnName(i);
-            attributes.put(columnName, getAttributeGetter(columnName));
-          }
-
-          SQLParser<Entry> parser = SQLParser.forPojoWithAttributes(Entry.class, attributes);
-          ParseResult<Entry> parsedResult = parser.parse("SELECT * from data where " + filterExpr.getText());
-          return parsedResult.getQuery().matches(entry, new QueryOptions());
-        }
-
-        private FunctionalSimpleAttribute<Entry, String> getAttributeGetter(
-            String attributeName) {
-          return new FunctionalSimpleAttribute<Entry, String>(Entry.class, String.class, attributeName,
-              obj -> {
-                for(int i = 0; i < table.getColumnCount(); ++i){
-
-                  if (table.getColumnName(i).equals(attributeName)){
-                    return obj.getStringValue(table.convertColumnIndexToModel(i));
-                  }
-                }
-                return null;
-              });
-        }
-      });
-
-
-
+      sorter.setRowFilter(new SqlRowFilter(table, filterExpr.getText()));
     }
   }
 
@@ -163,4 +126,5 @@ public class LogView extends JPanel {
   public void setScrollToBottom(boolean scrollToBottom) {
     this.scrollToBottom = scrollToBottom;
   }
+
 }
