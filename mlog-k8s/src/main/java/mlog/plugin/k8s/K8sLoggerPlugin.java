@@ -5,18 +5,20 @@ import static mlog.utils.UrlUtils.splitQuery;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import mlog.ctrl.rt.Channel;
-import mlog.ctrl.rt.StatefulLogParser;
+import mlog.ctrl.rt.logging.LogParser;
+import mlog.ctrl.rt.logging.regex.StatefulLogParser;
 import mlog.domain.LoggerConf;
 import mlog.plugin.LoggerPlugin;
+import mlog.utils.swing.SwingDsl;
 
 @Slf4j
 public class K8sLoggerPlugin implements LoggerPlugin {
@@ -27,9 +29,20 @@ public class K8sLoggerPlugin implements LoggerPlugin {
   }
 
   @Override
-  public List<Channel> createChannels(LoggerConf loggerConfig, Function<String, StatefulLogParser> parserFactory) {
+  public List<Channel> createChannels(LoggerConf loggerConfig, Function<String, LogParser> parserFactory) {
     Map<String, List<String>> options = splitQuery(loggerConfig.getUri().getQuery());
     List<String> pods = getPods(loggerConfig.getUri(), options);
+
+    if (pods.size() > 1){
+      var choice = SwingDsl.optionsDialog("show all or single pod?", "show single pod", "show all pods");
+      if (choice < 0) {
+        return  Collections.emptyList();
+      }
+      if (choice == 0) {
+        pods = List.of(pods.get(0));
+      }
+    }
+
     switch (loggerConfig.getUri().getScheme()){
       case "k8s":  return pods.stream().map(p -> new K8sLogChannel(p, options, parserFactory.apply(p)))
           .collect(Collectors.toList());

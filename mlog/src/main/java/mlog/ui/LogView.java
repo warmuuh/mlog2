@@ -4,6 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Singleton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -12,12 +17,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
+import mlog.PlatformUtil;
 import mlog.ctrl.rt.MessageBuffer;
-import mlog.domain.LoggerFormat;
+import mlog.ctrl.rt.logging.regex.RegexLoggerFormat;
 import mlog.ctrl.rt.Message;
 import mlog.ui.components.FlatSVGIcon;
 import mlog.utils.swing.BatchedDataModel;
@@ -34,6 +45,10 @@ public class LogView extends JPanel {
   private BatchedDataModel dataModel;
   private TableRowSorter<BatchedDataModel> sorter;
   private boolean scrollToBottom = false;
+
+  private Map<String, Integer> columnWidths = new HashMap<>();
+
+
 
   public LogView(LogDetailView logDetailView) {
     this.logDetailView = logDetailView;
@@ -59,7 +74,6 @@ public class LogView extends JPanel {
     add(toolBar, BorderLayout.PAGE_START);
 
     table = new JTable();
-
     table.getSelectionModel().addListSelectionListener(l -> {
       if (table.getSelectedRow() < 0)
         return;
@@ -68,13 +82,47 @@ public class LogView extends JPanel {
       logDetailView.showDetails(selectedMessage);
     });
 
+    table.getTableHeader().addMouseListener( new MouseAdapter() {
+      public void mouseReleased(MouseEvent arg0)
+      {
+        for( int i=0;i<table.getColumnModel().getColumnCount();i++ ) {
+          var column = table.getColumnModel().getColumn(i);
+          columnWidths.put(column.getHeaderValue().toString(), column.getWidth());
+        }
+
+      }});
+
+    table.getColumnModel().addColumnModelListener(new TableColumnModelListener() {
+      @Override
+      public void columnAdded(TableColumnModelEvent e) {
+        applyColumnWidths();
+      }
+
+      @Override
+      public void columnRemoved(TableColumnModelEvent e) {
+      }
+
+      @Override
+      public void columnMoved(TableColumnModelEvent e) {
+      }
+
+      @Override
+      public void columnMarginChanged(ChangeEvent e) {
+      }
+
+      @Override
+      public void columnSelectionChanged(ListSelectionEvent e) {
+      }
+    });
+
 
     table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
       @Override
       public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
       {
         final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        String prio = dataModel.getRowValue(sorter.convertRowIndexToModel(row)).getFields().getOrDefault("prio", "INFO");
+        var fields = dataModel.getRowValue(sorter.convertRowIndexToModel(row)).getFields();
+        String prio = fields.getOrDefault("prio", fields.getOrDefault("level", "INFO"));
         if ("WARN".equals(prio)) {
           c.setForeground(Color.ORANGE);
         } else if ("ERROR".equals(prio)) {
@@ -92,8 +140,8 @@ public class LogView extends JPanel {
 
 
 
-  public void startShowing(MessageBuffer buffer, LoggerFormat format) {
-    dataModel = new BatchedDataModel(buffer, format.getFields());
+  public void startShowing(MessageBuffer buffer, List<String> fields) {
+    dataModel = new BatchedDataModel(buffer, fields);
     dataModel.addTableModelListener(new TableModelListener() {
       @Override
       public void tableChanged(TableModelEvent e) {
@@ -104,8 +152,20 @@ public class LogView extends JPanel {
     });
 
     table.setModel(dataModel);
+    applyColumnWidths();
     sorter = new TableRowSorter<>(dataModel);
     table.setRowSorter(sorter);
+  }
+
+  private void applyColumnWidths() {
+    columnWidths.forEach((cIdx, cWidth) -> {
+      for( int i=0;i<table.getColumnModel().getColumnCount();i++ ) {
+        var column = table.getColumnModel().getColumn(i);
+        if (column.getHeaderValue().toString().equals(cIdx)){
+          column.setPreferredWidth(cWidth);
+        }
+      }
+    });
   }
 
 

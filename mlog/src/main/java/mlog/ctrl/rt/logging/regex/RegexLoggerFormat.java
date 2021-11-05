@@ -1,4 +1,4 @@
-package mlog.domain;
+package mlog.ctrl.rt.logging.regex;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,15 +9,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import mlog.ctrl.rt.logging.LoggerFormat;
 
 
 @NoArgsConstructor
-public class LoggerFormat {
+public class RegexLoggerFormat implements LoggerFormat {
   private String regex;
   private List<String> fields;
 
 
-  public LoggerFormat(String regex) {
+  public RegexLoggerFormat(String regex) {
     this.regex = regex;
     compile();
   }

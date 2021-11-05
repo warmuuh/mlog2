@@ -1,16 +1,13 @@
 package mlog.plugin.dummy;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mlog.ctrl.rt.Channel;
 import mlog.ctrl.rt.Message;
-import mlog.ctrl.rt.StatefulLogParser;
+import mlog.ctrl.rt.logging.LogParser;
+import mlog.ctrl.rt.logging.regex.StatefulLogParser;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.SynchronousSink;
 import reactor.core.scheduler.Schedulers;
 
 @Slf4j
@@ -18,7 +15,7 @@ import reactor.core.scheduler.Schedulers;
 public class DummyChannel implements Channel {
 
   private final String message;
-  private final StatefulLogParser parser;
+  private final LogParser parser;
   private final int msgPerSec;
 
   @Override

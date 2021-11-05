@@ -1,14 +1,11 @@
 package mlog.plugin.k8s;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import mlog.ctrl.rt.StatefulLogParser;
-import mlog.domain.LoggerConf;
+import mlog.ctrl.rt.logging.LogParser;
 
 @Slf4j
 public class K8sTailChannel extends PodLoggingChannel {
@@ -18,7 +15,7 @@ public class K8sTailChannel extends PodLoggingChannel {
 
   public K8sTailChannel(String podname, String file,
       Map<String, List<String>> options,
-      StatefulLogParser parser) {
+      LogParser parser) {
     super(podname, parser);
     this.file = file;
     this.options = new LinkedHashMap<>(options); //linkedHashMap to preserve order and have "--" parameter at the end

@@ -2,22 +2,15 @@ package mlog.persistence;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jdi.ObjectCollectedException;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputFilter.Config;
-import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import mlog.PlatformUtil;
 import mlog.domain.Configuration;
-import mlog.domain.LoggerConf;
-import mlog.domain.LoggerFormat;
 
 @Singleton
 @Slf4j

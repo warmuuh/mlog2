@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import mlog.ctrl.rt.Channel;
 import mlog.ctrl.rt.Message;
-import mlog.ctrl.rt.StatefulLogParser;
-import mlog.domain.LoggerConf;
+import mlog.ctrl.rt.logging.LogParser;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
@@ -18,7 +16,7 @@ import reactor.core.scheduler.Schedulers;
 public abstract class PodLoggingChannel implements Channel {
 
   private final String podname;
-  private final StatefulLogParser parser;
+  private final LogParser parser;
 
 
   private Process proc;

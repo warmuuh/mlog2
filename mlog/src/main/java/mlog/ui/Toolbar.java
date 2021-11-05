@@ -66,9 +66,15 @@ public class Toolbar extends JToolBar {
         }
       }
     });
-
-
     add(configSelect);
+
+    JButton configEdit = new JButton(new FlatSVGIcon("icons/edit.svg"));
+    configEdit.addActionListener(e -> {
+          ConfigComboEntry selected = (ConfigComboEntry) configSelect.getSelectedItem();
+          OnCommand.invoke(new ShowEditConfigurationDialog(selected != null ? selected.getConfig() : null));
+        }
+    );
+    add(configEdit);
 
     JButton execute = new JButton(new FlatSVGIcon("icons/execute.svg"));
     execute.addActionListener(e -> {
@@ -94,20 +100,15 @@ public class Toolbar extends JToolBar {
   }
 
   public void setConfigurations(List<Configuration> allConfigurations) {
+    var selectedItem = configSelect.getSelectedIndex();
+
     configSelect.removeAllItems();
+    allConfigurations.forEach(c -> {
+      var item = new ConfigComboEntry(c.getName(), c);
+      configSelect.addItem(item);
+    });
 
-    ConfigComboEntry item = new ConfigComboEntry("Edit Configurations...", null);
-
-    configSelect.addItem(item);
-    configSelect.addItem(new ConfigComboEntry(null, null)); //separator
-    allConfigurations.forEach(c -> configSelect.addItem(new ConfigComboEntry(c.getName(), c)));
-
-
-    if (allConfigurations.size() > 0) {
-      configSelect.setSelectedIndex(2);
-    }
-    // we have to do it out of order bc otherwise, addItem selects the item directly and opens the dialog
-    item.OnSelect.add(() -> OnCommand.invoke(new ShowEditConfigurationDialog()));
+    configSelect.setSelectedIndex(Math.max(selectedItem, 0));
   }
 
   @Value

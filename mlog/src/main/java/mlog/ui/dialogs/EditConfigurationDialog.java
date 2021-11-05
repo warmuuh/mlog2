@@ -3,42 +3,36 @@ package mlog.ui.dialogs;
 import static mlog.utils.swing.SwingDsl.*;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.ui.FlatOptionPaneUI;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
 import mlog.domain.Configuration;
+import mlog.domain.LogType;
 import mlog.domain.LoggerConf;
-import mlog.domain.LoggerFormat;
-import mlog.ui.components.FlatSVGIcon;
+import mlog.ctrl.rt.logging.regex.RegexLoggerFormat;
 import mlog.utils.swing.Bindings;
 import mlog.utils.swing.GridBagConstraintHelper;
-import mlog.utils.swing.SwingDsl;
 import org.apache.commons.lang3.StringUtils;
 
 public class EditConfigurationDialog extends JDialog {
@@ -74,7 +68,7 @@ public class EditConfigurationDialog extends JDialog {
       if(StringUtils.isBlank(name))
         return;
       Configuration configuration = new Configuration(UUID.randomUUID().toString(), name,
-          new LinkedList<>(), new LoggerFormat("(?<message>.*)"));
+          new LinkedList<>(), LogType.Regex, "(?<message>.*)");
       configurations.add(configuration);
       configurationList.setListData(configurations.toArray(new Configuration[]{}));
       configurationList.setSelectedValue(configuration, true);
@@ -113,7 +107,11 @@ public class EditConfigurationDialog extends JDialog {
     return leftSide;
   }
 
-  public void showOptionsFor(Configuration configuration) {
+  public void selectConfiguration(Configuration configuration) {
+    configurationList.setSelectedValue(configuration, true);
+  }
+
+  private void showOptionsFor(Configuration configuration) {
     optionPane.removeAll();
     bindings.clear();
     if (configuration == null){
@@ -195,9 +193,13 @@ public class EditConfigurationDialog extends JDialog {
 
     optionPane.add(loggerList, c.next(8, 2, true));
 
+    optionPane.add(label("LogType"), c.next());
+    var values = Arrays.stream(LogType.values()).map(Object::toString).collect(Collectors.toList());
+    optionPane.add(select(configuration.getLogType().name(), newValue -> configuration.setLogType(LogType.parse(newValue)),
+        values.toArray(new String[]{}), bindings), c.next());
 
-    optionPane.add(label("Format"), c.next());
-    optionPane.add(text(configuration.getFormat().getRegex(), configuration.getFormat()::setRegex, bindings), c.next());
+    optionPane.add(label("LogConfiguration"), c.next());
+    optionPane.add(text(configuration.getLogTypeConfig(), configuration::setLogTypeConfig, bindings), c.next());
 
     setupActionBtns(c);
     optionPane.doLayout();

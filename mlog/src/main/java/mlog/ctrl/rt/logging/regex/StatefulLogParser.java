@@ -1,19 +1,20 @@
-package mlog.ctrl.rt;
+package mlog.ctrl.rt.logging.regex;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import mlog.domain.LoggerFormat;
+import mlog.ctrl.rt.Message;
+import mlog.ctrl.rt.logging.LogParser;
 
 
-public class StatefulLogParser {
+public class StatefulLogParser implements LogParser {
 
   private final String channelName;
-  private final LoggerFormat format;
+  private final RegexLoggerFormat format;
   private final Pattern pattern;
 
 
-  public StatefulLogParser(String channelName, LoggerFormat format) {
+  public StatefulLogParser(String channelName, RegexLoggerFormat format) {
     this.channelName = channelName;
     this.format = format;
     this.pattern = Pattern.compile(format.getRegex(), Pattern.DOTALL);
