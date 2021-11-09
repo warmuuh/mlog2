@@ -24,8 +24,10 @@ k8s+tail://your-service/tmp/access-log.2020-06-15.log?n=namespace
 now you need to define the format of your logging:
 
 **json:** simply list the fields you want to show up in the `LogConfiguration` (comma-separated)
+
 **regex:** you need to define a regular expression with named capture-groups that will be used as columns in the log-view.
 example for a regular expression
+
 ```
 (?<date>\d{4}\-\d{2}\-\d{1,2}[ ]{1,2}\d{1,2}:\d{2}:\d{2}.\d{3})[ ]{1,2}(?<prio>INFO|DEBUG|WARN|ERROR)[ ](?<thread>\[.*?\])[ ](?<logger>.*?)(?<message>.*)
 
