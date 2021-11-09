@@ -22,10 +22,8 @@ public class JsonLogParser implements LogParser {
     HashMap<String, String> entries = new HashMap<>();
     try {
       var node = objectMapper.readTree(logline);
-      format.getFields().forEach(f -> {
-        if (node.has(f)) {
-          entries.put(f, node.get(f).asText());
-        }
+      format.getSuppliers().forEach(s -> {
+        entries.put(s.getFieldName(), s.getValue(node));
       });
     } catch (Exception e) {
       /* ignore line */
