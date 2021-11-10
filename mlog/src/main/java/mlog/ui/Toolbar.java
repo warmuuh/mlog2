@@ -108,7 +108,9 @@ public class Toolbar extends JToolBar {
       configSelect.addItem(item);
     });
 
-    configSelect.setSelectedIndex(Math.max(selectedItem, 0));
+    if (!allConfigurations.isEmpty()) {
+      configSelect.setSelectedIndex(Math.max(selectedItem, 0));
+    }
   }
 
   @Value

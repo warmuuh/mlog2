@@ -20,6 +20,9 @@ public class JsonLoggerFormat implements LoggerFormat {
     this.fields = Arrays.stream(fields.split(","))
         .map(String::trim)
         .collect(Collectors.toList());
+    this.suppliers = this.fields.stream()
+        .map(JsonPropertySupplier::new)
+        .collect(Collectors.toList());
   }
 
 }
