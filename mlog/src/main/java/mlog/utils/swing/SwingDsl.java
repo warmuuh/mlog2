@@ -29,6 +29,14 @@ public class SwingDsl {
         options[0]);
   }
 
+  public String selectDialog(String text, String... options){
+    return (String) JOptionPane.showInputDialog(owner, text, "Selection",
+        JOptionPane.DEFAULT_OPTION,
+        null,
+        options,
+        options[0]);
+  }
+
   public JLabel label(String value){
     return new JLabel(value);
   }

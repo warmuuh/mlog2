@@ -34,12 +34,15 @@ public class K8sLoggerPlugin implements LoggerPlugin {
     List<String> pods = getPods(loggerConfig.getUri(), options);
 
     if (pods.size() > 1){
-      var choice = SwingDsl.optionsDialog("show all or single pod?", "show single pod", "show all pods");
-      if (choice < 0) {
+      var opts = new LinkedList<String>();
+      opts.add("All Pods");
+      opts.addAll(pods);
+      var choice = SwingDsl.selectDialog("Which pod to show?", opts.toArray(new String[0]));
+      if (choice == null) {
         return  Collections.emptyList();
       }
-      if (choice == 0) {
-        pods = List.of(pods.get(0));
+      if (!choice.equals("All Pods")) {
+        pods = List.of(choice);
       }
     }
 

@@ -31,6 +31,7 @@ import mlog.domain.Configuration;
 import mlog.domain.LogType;
 import mlog.domain.LoggerConf;
 import mlog.ctrl.rt.logging.regex.RegexLoggerFormat;
+import mlog.utils.ObjectUtils;
 import mlog.utils.swing.Bindings;
 import mlog.utils.swing.GridBagConstraintHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -74,6 +75,21 @@ public class EditConfigurationDialog extends JDialog {
       configurationList.setSelectedValue(configuration, true);
       showOptionsFor(configuration);
     }));
+
+    toolBar.add(iconBtn("icons/copy.svg", () -> {
+      var selectedConfig = configurationList.getSelectedValue();
+      if (selectedConfig == null) {
+        return;
+      }
+      var newCopy = ObjectUtils.deepClone(selectedConfig);
+      newCopy.setId(UUID.randomUUID().toString());
+      newCopy.setName(newCopy.getName() + " (copy)");
+      configurations.add(newCopy);
+      configurationList.setListData(configurations.toArray(new Configuration[]{}));
+      configurationList.setSelectedValue(newCopy, true);
+      showOptionsFor(newCopy);
+    }));
+
 
     toolBar.add(iconBtn("icons/remove.svg", () -> {
       if (configurationList.getSelectedValue() != null){
@@ -217,8 +233,9 @@ public class EditConfigurationDialog extends JDialog {
 
     btns.add(button("Apply", () -> {
       bindings.apply();
+      var selectedValue = configurationList.getSelectedValue();
       configurationList.setListData(configurations.toArray(new Configuration[]{}));
-      showOptionsFor(null);
+      configurationList.setSelectedValue(selectedValue, true);
     }));
 
     btns.add(button("Ok", () -> {
