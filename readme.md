@@ -56,7 +56,7 @@ parameters supported are the usual ones by `kubectl` such as (n)amespace or (c)o
 
 ## Kafka
 
-Plugin allows to listen to kafka topics using schema like: `kafka://<bootstrap-server>/<topic>?[props=optional-property-file]&[group=optional-consumer-group-name]
+Plugin allows to listen to kafka topics using schema like: `kafka://<bootstrap-server>/<topic>?[props=optional-property-file]&[group=optional-consumer-group-name]`
 
 ## Avro
 
