@@ -1,6 +1,9 @@
 package mlog.ctrl;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
@@ -131,8 +134,9 @@ public class ApplicationController {
         .findAny()
         .orElseThrow(() -> new IllegalArgumentException("Unknown log format: " + config.getLogType()));
 
-    return factory.getDefinedFields(config.getLogTypeConfig());
+    return factory.getDefinedFields(config.getLogTypeConfig(), loadAdditionalParams(config));
   }
+
 
   public LogParser createLogParser(String channelName, Configuration config) {
     LogParserFactory factory = pluginManager.loadLogParserFactories().stream()
@@ -140,7 +144,17 @@ public class ApplicationController {
         .findAny()
         .orElseThrow(() -> new IllegalArgumentException("Unknown log format: " + config.getLogType()));
 
-    return factory.create(channelName, config.getLogTypeConfig());
+    return factory.create(channelName, config.getLogTypeConfig(), loadAdditionalParams(config));
   }
 
+  private Map<String, String> loadAdditionalParams(Configuration config) {
+    String addCfg = config.getLogTypeAdditionalConfig() != null ? config.getLogTypeAdditionalConfig() : "";
+    Map<String, String> additionalParamsMap = Arrays.asList(addCfg.split(",")).stream()
+        .map(pair -> pair.trim().split("="))
+        .collect(Collectors.toMap(
+            pair -> pair[0],
+            pair -> pair[1]
+        ));
+    return additionalParamsMap;
+  }
 }

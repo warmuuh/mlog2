@@ -23,6 +23,12 @@
       <artifactId>reactor-kafka</artifactId>
       <version>1.2.7.RELEASE</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>1.11.0</version>
+    </dependency>
+
 
   </dependencies>
 

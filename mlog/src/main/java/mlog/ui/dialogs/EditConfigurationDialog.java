@@ -73,7 +73,7 @@ public class EditConfigurationDialog extends JDialog {
       if(StringUtils.isBlank(name))
         return;
       Configuration configuration = new Configuration(UUID.randomUUID().toString(), name,
-          new LinkedList<>(), "Regex", "(?<message>.*)");
+          new LinkedList<>(), "Regex", "(?<message>.*)", "");
       configurations.add(configuration);
       configurationList.setListData(configurations.toArray(new Configuration[]{}));
       configurationList.setSelectedValue(configuration, true);
@@ -220,6 +220,9 @@ public class EditConfigurationDialog extends JDialog {
 
     optionPane.add(label("LogConfiguration"), c.next());
     optionPane.add(text(configuration.getLogTypeConfig(), configuration::setLogTypeConfig, bindings), c.next());
+
+    optionPane.add(label("Additional config"), c.next());
+    optionPane.add(text(configuration.getLogTypeAdditionalConfig(), configuration::setLogTypeAdditionalConfig, bindings), c.next());
 
     setupActionBtns(c);
     optionPane.doLayout();

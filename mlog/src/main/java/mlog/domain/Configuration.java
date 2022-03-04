@@ -15,6 +15,7 @@ public class Configuration {
     List<LoggerConf> logger;
     String logType;
     String logTypeConfig;
+    String logTypeAdditionalConfig;
 
     /**
      * backwards compatibility
