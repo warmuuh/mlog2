@@ -49,7 +49,7 @@ public class StatefulLogParser implements LogParser {
         prevMessage.getFields().put("message", input);
         return prevMessage;
       }
-      prevMessage.getFields().put("message", prevMessage.getFields().get("message") + "￿\n" + logline);
+      prevMessage.getFields().put("message", prevMessage.getFields().get("message") + "\n" + logline);
       return null;
     }
   }
