@@ -21,6 +21,11 @@ public class PluginManager {
 		return loadSpiInstances(LoggerPlugin.class);
 	}
 
+	public List<LogParserFactory> loadLogParserFactories() {
+		return loadSpiInstances(LogParserFactory.class);
+	}
+
+
 	public void wireUp(Object o) {
 
 	}

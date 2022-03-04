@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.Function;
 import mlog.ctrl.rt.Channel;
 import mlog.ctrl.rt.logging.LogParser;
-import mlog.ctrl.rt.logging.regex.StatefulLogParser;
 import mlog.domain.LoggerConf;
 import mlog.plugin.LoggerPlugin;
 import mlog.utils.UrlUtils;

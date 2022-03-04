@@ -3,6 +3,7 @@ package mlog.plugin.k8s;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mlog.ctrl.rt.Channel;
@@ -55,7 +56,7 @@ public abstract class PodLoggingChannel implements Channel {
         try {
           Message prevMessage = null;
           while (input.ready()) {
-            Message curMsg = parser.parse(input.readLine(), prevMessage);
+            Message curMsg = parser.parse(input.readLine().getBytes(StandardCharsets.UTF_8), prevMessage);
             if (curMsg != null){
               if (prevMessage != null){
                 sink.next(prevMessage);

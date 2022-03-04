@@ -10,13 +10,9 @@ import mlog.ctrl.rt.Channel;
 import mlog.ctrl.rt.MessageBuffer;
 import mlog.ctrl.rt.MessageQueue;
 import mlog.ctrl.rt.logging.LogParser;
-import mlog.ctrl.rt.logging.json.JsonLogParser;
-import mlog.ctrl.rt.logging.json.JsonLoggerFormat;
-import mlog.ctrl.rt.logging.regex.RegexLoggerFormat;
-import mlog.ctrl.rt.logging.regex.StatefulLogParser;
 import mlog.domain.Configuration;
-import mlog.domain.LogType;
 import mlog.persistence.PersistenceManager;
+import mlog.plugin.LogParserFactory;
 import mlog.plugin.LoggerPlugin;
 import mlog.plugin.PluginManager;
 import mlog.ui.ConnectionView;
@@ -89,7 +85,8 @@ public class ApplicationController {
 
   private void showConfigurationDialog(Configuration selectedConfiguration) {
     List<Configuration> allConfigurations = persistenceManager.findAllConfigurations();
-    EditConfigurationDialog dialog = new EditConfigurationDialog(allConfigurations, mainWindow);
+    EditConfigurationDialog dialog = new EditConfigurationDialog(allConfigurations,
+        pluginManager.loadLogParserFactories(), mainWindow);
     dialog.selectConfiguration(selectedConfiguration);
     dialog.setVisible(true);
     persistenceManager.storeAll();
@@ -99,9 +96,9 @@ public class ApplicationController {
 
   private void stopConfiguration(CfgRunContext currentRunContext) {
     statusView.stopMonitor();
-		if (currentRunContext != null) {
-			currentRunContext.stop();
-		}
+    if (currentRunContext != null) {
+      currentRunContext.stop();
+    }
   }
 
   private void execConfiguration(Configuration config) {
@@ -128,22 +125,22 @@ public class ApplicationController {
     }
   }
 
-	public List<String> getFields(Configuration config) {
-		if (config.getLogType() == LogType.Regex) {
-			return new RegexLoggerFormat(config.getLogTypeConfig()).getFields();
-		} else if (config.getLogType() == LogType.Json) {
-			return new JsonLoggerFormat(config.getLogTypeConfig()).getFields();
-		}
-		throw new IllegalArgumentException("Unsupported logtype: " + config.getLogType());
-	}
+  public List<String> getFields(Configuration config) {
+    LogParserFactory factory = pluginManager.loadLogParserFactories().stream()
+        .filter(f -> f.getLogFormatName().equalsIgnoreCase(config.getLogType()))
+        .findAny()
+        .orElseThrow(() -> new IllegalArgumentException("Unknown log format: " + config.getLogType()));
+
+    return factory.getDefinedFields(config.getLogTypeConfig());
+  }
 
   public LogParser createLogParser(String channelName, Configuration config) {
-    if (config.getLogType() == LogType.Regex) {
-      return new StatefulLogParser(channelName, new RegexLoggerFormat(config.getLogTypeConfig()));
-    } else if (config.getLogType() == LogType.Json) {
-      return new JsonLogParser(channelName, new JsonLoggerFormat(config.getLogTypeConfig()));
-    }
-    throw new IllegalArgumentException("Unsupported logtype: " + config.getLogType());
+    LogParserFactory factory = pluginManager.loadLogParserFactories().stream()
+        .filter(f -> f.getLogFormatName().equalsIgnoreCase(config.getLogType()))
+        .findAny()
+        .orElseThrow(() -> new IllegalArgumentException("Unknown log format: " + config.getLogType()));
+
+    return factory.create(channelName, config.getLogTypeConfig());
   }
 
 }

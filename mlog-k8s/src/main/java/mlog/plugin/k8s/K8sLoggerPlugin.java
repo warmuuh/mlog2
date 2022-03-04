@@ -15,7 +15,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import mlog.ctrl.rt.Channel;
 import mlog.ctrl.rt.logging.LogParser;
-import mlog.ctrl.rt.logging.regex.StatefulLogParser;
 import mlog.domain.LoggerConf;
 import mlog.plugin.LoggerPlugin;
 import mlog.utils.swing.SwingDsl;

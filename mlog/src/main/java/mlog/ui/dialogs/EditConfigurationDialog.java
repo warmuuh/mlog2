@@ -1,6 +1,10 @@
 package mlog.ui.dialogs;
 
-import static mlog.utils.swing.SwingDsl.*;
+import static mlog.utils.swing.SwingDsl.button;
+import static mlog.utils.swing.SwingDsl.iconBtn;
+import static mlog.utils.swing.SwingDsl.label;
+import static mlog.utils.swing.SwingDsl.select;
+import static mlog.utils.swing.SwingDsl.text;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.BorderLayout;
@@ -13,7 +17,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -28,9 +31,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import lombok.SneakyThrows;
 import mlog.domain.Configuration;
-import mlog.domain.LogType;
 import mlog.domain.LoggerConf;
-import mlog.ctrl.rt.logging.regex.RegexLoggerFormat;
+import mlog.plugin.LogParserFactory;
 import mlog.utils.ObjectUtils;
 import mlog.utils.swing.Bindings;
 import mlog.utils.swing.GridBagConstraintHelper;
@@ -43,13 +45,13 @@ public class EditConfigurationDialog extends JDialog {
   private final Bindings bindings = new Bindings();
   private List<Configuration> configurations;
 
-  public EditConfigurationDialog(List<Configuration> configurations, Frame owner) {
+  public EditConfigurationDialog(List<Configuration> configurations, List<LogParserFactory> logparsers, Frame owner) {
     super(owner, "Edit Configurations...", true);
     this.configurations = configurations;
     FlatDarkLaf.install();
 
     getContentPane().setLayout(new BorderLayout(5, 5));
-    JPanel leftSide = createConfigListView(configurations);
+    JPanel leftSide = createConfigListView(configurations, logparsers);
 
     optionPane = new JPanel();
     optionPane.setLayout(new GridBagLayout());
@@ -60,7 +62,9 @@ public class EditConfigurationDialog extends JDialog {
     setSize(new Dimension(1000, 500));
   }
 
-  private JPanel createConfigListView(List<Configuration> configurations) {
+
+  private JPanel createConfigListView(List<Configuration> configurations,
+      List<LogParserFactory> logparsers) {
     JPanel leftSide = new JPanel();
     leftSide.setLayout(new BorderLayout());
     JToolBar toolBar = new JToolBar();
@@ -69,11 +73,11 @@ public class EditConfigurationDialog extends JDialog {
       if(StringUtils.isBlank(name))
         return;
       Configuration configuration = new Configuration(UUID.randomUUID().toString(), name,
-          new LinkedList<>(), LogType.Regex, "(?<message>.*)");
+          new LinkedList<>(), "Regex", "(?<message>.*)");
       configurations.add(configuration);
       configurationList.setListData(configurations.toArray(new Configuration[]{}));
       configurationList.setSelectedValue(configuration, true);
-      showOptionsFor(configuration);
+      showOptionsFor(configuration, logparsers);
     }));
 
     toolBar.add(iconBtn("icons/copy.svg", () -> {
@@ -87,7 +91,7 @@ public class EditConfigurationDialog extends JDialog {
       configurations.add(newCopy);
       configurationList.setListData(configurations.toArray(new Configuration[]{}));
       configurationList.setSelectedValue(newCopy, true);
-      showOptionsFor(newCopy);
+      showOptionsFor(newCopy, logparsers);
     }));
 
 
@@ -105,7 +109,7 @@ public class EditConfigurationDialog extends JDialog {
     configurationList = new JList<>();
     configurationList.setListData(configurations.toArray(new Configuration[]{}));
     configurationList.getSelectionModel().addListSelectionListener(evt -> {
-      showOptionsFor(configurationList.getSelectedValue());
+      showOptionsFor(configurationList.getSelectedValue(), logparsers);
 
     });
     configurationList.setCellRenderer(new DefaultListCellRenderer() {
@@ -127,7 +131,8 @@ public class EditConfigurationDialog extends JDialog {
     configurationList.setSelectedValue(configuration, true);
   }
 
-  private void showOptionsFor(Configuration configuration) {
+  private void showOptionsFor(Configuration configuration,
+      List<LogParserFactory> logparsers) {
     optionPane.removeAll();
     bindings.clear();
     if (configuration == null){
@@ -210,9 +215,8 @@ public class EditConfigurationDialog extends JDialog {
     optionPane.add(loggerList, c.next(8, 2, true));
 
     optionPane.add(label("LogType"), c.next());
-    var values = Arrays.stream(LogType.values()).map(Object::toString).collect(Collectors.toList());
-    optionPane.add(select(configuration.getLogType().name(), newValue -> configuration.setLogType(LogType.parse(newValue)),
-        values.toArray(new String[]{}), bindings), c.next());
+    var values = logparsers.stream().map(LogParserFactory::getLogFormatName).collect(Collectors.toList());
+    optionPane.add(select(configuration.getLogType(), configuration::setLogType, values.toArray(new String[]{}), bindings), c.next());
 
     optionPane.add(label("LogConfiguration"), c.next());
     optionPane.add(text(configuration.getLogTypeConfig(), configuration::setLogTypeConfig, bindings), c.next());

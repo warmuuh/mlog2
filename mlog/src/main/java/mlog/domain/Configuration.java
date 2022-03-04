@@ -13,14 +13,14 @@ public class Configuration {
     String id;
     String name;
     List<LoggerConf> logger;
-    LogType logType;
+    String logType;
     String logTypeConfig;
 
     /**
      * backwards compatibility
      */
     public void setFormat(RegexLoggerFormat format) {
-        this.logType = LogType.Regex;
+        this.logType = "Regex";
         this.logTypeConfig = format.getRegex();
     }
 }

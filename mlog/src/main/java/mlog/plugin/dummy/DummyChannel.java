@@ -1,12 +1,12 @@
 package mlog.plugin.dummy;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mlog.ctrl.rt.Channel;
 import mlog.ctrl.rt.Message;
 import mlog.ctrl.rt.logging.LogParser;
-import mlog.ctrl.rt.logging.regex.StatefulLogParser;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
@@ -52,6 +52,6 @@ public class DummyChannel implements Channel {
 
     return flux
         .subscribeOn(Schedulers.boundedElastic())
-        .map(parser::parse);
+        .map(msg -> parser.parse(msg.getBytes(StandardCharsets.UTF_8)));
   }
 }

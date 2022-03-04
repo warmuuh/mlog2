@@ -12,6 +12,7 @@
 		<module>mlog</module>
 		<module>mlog-k8s</module>
 		<module>mlog-dist</module>
+		<module>mlog-kafka</module>
 	</modules>
 
 	<properties>
