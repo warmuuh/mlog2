@@ -49,9 +49,16 @@ logger_name LIKE '%Logging%'
 
 ## Kubernetes
 
-currently, only logging by kubernetes is supported.
-
 * `k8s://` will use `kubectl log` functionality
 * `k8s+tail://` will use `kubectl exec bash` combined with `tail` functionality on remote-side.
 
 parameters supported are the usual ones by `kubectl` such as (n)amespace or (c)ontainer or `since` (optional)
+
+## Kafka
+
+Plugin allows to listen to kafka topics using schema like: `kafka://<bootstrap-server>/<topic>?[props=optional-property-file]&[group=optional-consumer-group-name]
+
+## Avro
+
+Kafka-plugin also comes with Avro-support: You can define Avro as log-format and messages will be parsed via a given avro-schema.
+Additional config example: `[offset=an-offset-to-skip-some-bytes],schema=<path-to-schema>`
