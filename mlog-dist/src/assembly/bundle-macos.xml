@@ -52,6 +52,7 @@
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
 				<include>com.github.warmuuh:mlog-k8s</include>
+				<include>com.github.warmuuh:mlog-kafka</include>
 			</includes>
 			<binaries>
 				<unpack>false</unpack>
