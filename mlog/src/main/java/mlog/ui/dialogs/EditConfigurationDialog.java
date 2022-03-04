@@ -1,10 +1,6 @@
 package mlog.ui.dialogs;
 
-import static mlog.utils.swing.SwingDsl.button;
-import static mlog.utils.swing.SwingDsl.iconBtn;
-import static mlog.utils.swing.SwingDsl.label;
-import static mlog.utils.swing.SwingDsl.select;
-import static mlog.utils.swing.SwingDsl.text;
+import static mlog.utils.swing.SwingDsl.*;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.BorderLayout;
