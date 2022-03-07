@@ -150,7 +150,9 @@ public class ApplicationController {
   private Map<String, String> loadAdditionalParams(Configuration config) {
     String addCfg = config.getLogTypeAdditionalConfig() != null ? config.getLogTypeAdditionalConfig() : "";
     Map<String, String> additionalParamsMap = Arrays.asList(addCfg.split(",")).stream()
-        .map(pair -> pair.trim().split("="))
+        .map(String::trim)
+        .filter(s -> !s.isEmpty())
+        .map(pair -> pair.split("="))
         .collect(Collectors.toMap(
             pair -> pair[0],
             pair -> pair[1]
