@@ -13,9 +13,6 @@ import org.apache.avro.Schema.Field;
 
 public class AvroLogParserFactory implements LogParserFactory {
 
-  public static final String XDC_CORE_AD_SCHEMA_FILE = "/usr/local/workspaces/ek/avro/ad-message-schemas-published/src/main/resources/avro-schemas/xdc-core-ad/value/14.avsc";
-
-
   @Override
   public String getLogFormatName() {
     return "Avro";
