@@ -65,5 +65,5 @@ Additional config example: `[offset=an-offset-to-skip-some-bytes],schema=<path-t
 
 # Protobuf
 
-Kafka-plugin also comes with Avro-support: You can define Protobuf as log-format and messages will be parsed via a given protobuf-schema.
+Kafka-plugin also comes with Protobuf-support: You can define Protobuf as log-format and messages will be parsed via a given protobuf-schema.
 Additional config example: `type=<name-of-event-type>,schema=<path-to-schema>`
