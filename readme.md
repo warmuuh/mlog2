@@ -62,3 +62,8 @@ Plugin allows to listen to kafka topics using schema like: `kafka://<bootstrap-s
 
 Kafka-plugin also comes with Avro-support: You can define Avro as log-format and messages will be parsed via a given avro-schema.
 Additional config example: `[offset=an-offset-to-skip-some-bytes],schema=<path-to-schema>`
+
+# Protobuf
+
+Kafka-plugin also comes with Avro-support: You can define Protobuf as log-format and messages will be parsed via a given protobuf-schema.
+Additional config example: `type=<name-of-event-type>,schema=<path-to-schema>`

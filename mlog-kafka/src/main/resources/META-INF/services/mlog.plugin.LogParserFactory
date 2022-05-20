@@ -1,1 +1,2 @@
 mlog.plugin.avro.AvroLogParserFactory
+mlog.plugin.proto.ProtoLogParserFactory
