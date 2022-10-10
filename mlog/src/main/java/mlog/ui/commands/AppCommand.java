@@ -20,6 +20,9 @@ public interface AppCommand {
   }
 
   @Value
+  class ShowApplicationLog implements AppCommand {}
+
+  @Value
   class ClearBuffer implements  AppCommand {}
 
   @Value

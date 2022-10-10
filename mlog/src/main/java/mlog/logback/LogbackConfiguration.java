@@ -9,6 +9,7 @@ import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+import ch.qos.logback.core.read.CyclicBufferAppender;
 import ch.qos.logback.core.rolling.FixedWindowRollingPolicy;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
@@ -20,7 +21,13 @@ import mlog.PlatformUtil;
 public class LogbackConfiguration extends ContextAwareBase implements Configurator {
 
 	private static boolean muteConsole = false;
-	
+
+	private static LogbackInmemAppender<ILoggingEvent> inmemoryAppender = new LogbackInmemAppender<>();
+
+	public static LogbackInmemAppender<ILoggingEvent> getInmemoryAppender() {
+		return inmemoryAppender;
+	}
+
 	public static void setMuteConsole(boolean muteConsole) {
 		LogbackConfiguration.muteConsole = muteConsole;
 	}
@@ -31,7 +38,23 @@ public class LogbackConfiguration extends ContextAwareBase implements Configurat
 		if (!muteConsole) {
 			setupConsoleAppender(loggerContext);
 		}
+		setupInmemoryAppender(loggerContext);
 		setupFileAppender(loggerContext);
+	}
+	private void setupInmemoryAppender(LoggerContext loggerContext) {
+		CyclicBufferAppender<ILoggingEvent> ca = inmemoryAppender;
+		ca.setContext(loggerContext);
+		ca.setName("INMEM");
+
+		var filter = new ThresholdFilter();
+		filter.setLevel("INFO");
+		filter.start();
+		ca.addFilter(filter);
+
+		ca.start();
+
+		Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+		rootLogger.addAppender(ca);
 	}
 
 	private void setupConsoleAppender(LoggerContext loggerContext) {
@@ -69,7 +92,7 @@ public class LogbackConfiguration extends ContextAwareBase implements Configurat
 	private void setupFileAppender(LoggerContext loggerContext) {
 		RollingFileAppender<ILoggingEvent> fa = new RollingFileAppender<ILoggingEvent>();
 		String location = PlatformUtil.getWritableLocationForFile("errors.log");
-		new File(location).mkdirs();
+		new File(location).getAbsoluteFile().getParentFile().mkdirs();
 		fa.setFile(location);
 		
 		SizeBasedTriggeringPolicy<ILoggingEvent> sizePolicy = new SizeBasedTriggeringPolicy<ILoggingEvent>();

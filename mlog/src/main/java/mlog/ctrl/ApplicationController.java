@@ -19,6 +19,7 @@ import mlog.plugin.LogParserFactory;
 import mlog.plugin.LoggerPlugin;
 import mlog.plugin.PluginManager;
 import mlog.ui.ConnectionView;
+import mlog.ui.LogPanelView;
 import mlog.ui.LogView;
 import mlog.ui.MainWindow;
 import mlog.ui.StatusView;
@@ -27,8 +28,10 @@ import mlog.ui.commands.AppCommand;
 import mlog.ui.commands.AppCommand.ClearBuffer;
 import mlog.ui.commands.AppCommand.ExecConfiguration;
 import mlog.ui.commands.AppCommand.SetAutoscroll;
+import mlog.ui.commands.AppCommand.ShowApplicationLog;
 import mlog.ui.commands.AppCommand.ShowEditConfigurationDialog;
 import mlog.ui.commands.AppCommand.StopCurrentConfiguration;
+import mlog.ui.dialogs.ApplicationLogDialog;
 import mlog.ui.dialogs.EditConfigurationDialog;
 import mlog.utils.swing.SwingDsl;
 import reactor.core.Disposable;
@@ -42,6 +45,7 @@ public class ApplicationController {
   private final StatusView statusView;
   private final LogView logView;
   private final ConnectionView connectionView;
+  private final LogPanelView appLogPannel;
 
   private final PluginManager pluginManager;
 
@@ -52,6 +56,7 @@ public class ApplicationController {
   @PostConstruct
   public void setupApplication() {
     toolbar.OnCommand.add(this::handleCommand);
+    appLogPannel.OnCommand.add(this::handleCommand);
   }
 
   public void initApplication() {
@@ -76,6 +81,8 @@ public class ApplicationController {
       showConfigurationDialog(((ShowEditConfigurationDialog) command).getSelectedConfiguration());
     } else if (command instanceof SetAutoscroll) {
       logView.setScrollToBottom(((SetAutoscroll) command).isAutoscroll());
+    } else if (command instanceof ShowApplicationLog) {
+      showApplicationLog();
     } else {
       throw new IllegalArgumentException("Unsupported command: " + command);
     }
@@ -95,6 +102,11 @@ public class ApplicationController {
     persistenceManager.storeAll();
     toolbar.setConfigurations(allConfigurations);
 
+  }
+
+  private void showApplicationLog() {
+    ApplicationLogDialog dialog = new ApplicationLogDialog(mainWindow);
+    dialog.setVisible(true);
   }
 
   private void stopConfiguration(CfgRunContext currentRunContext) {

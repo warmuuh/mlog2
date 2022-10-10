@@ -2,6 +2,7 @@ package mlog.ui;
 
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
+import java.awt.LayoutManager;
 import java.awt.Taskbar;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
@@ -9,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +19,12 @@ import lombok.RequiredArgsConstructor;
 public class MainWindow extends JFrame {
 
 
-  public MainWindow(Toolbar toolbar, ConnectionView connectionView, LogView logView, LogDetailView logDetailView, StatusView statusView) throws HeadlessException {
+  public MainWindow(Toolbar toolbar,
+      ConnectionView connectionView,
+      LogView logView,
+      LogDetailView logDetailView,
+      StatusView statusView,
+      LogPanelView logPanelView) throws HeadlessException {
     super("Mlog");
 
     setIcon();
@@ -46,7 +53,11 @@ public class MainWindow extends JFrame {
 
 
     getContentPane().add(verSplit, BorderLayout.CENTER);
-    getContentPane().add(statusView, BorderLayout.PAGE_END);
+    JPanel bottomPannel = new JPanel();
+    bottomPannel.setLayout(new BoxLayout(bottomPannel,BoxLayout.Y_AXIS));
+    bottomPannel.add(statusView);
+    bottomPannel.add(logPanelView);
+    getContentPane().add(bottomPannel, BorderLayout.PAGE_END);
 
 
 

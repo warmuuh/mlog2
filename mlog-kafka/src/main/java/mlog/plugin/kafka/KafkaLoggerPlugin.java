@@ -18,6 +18,7 @@ import mlog.domain.LoggerConf;
 import mlog.plugin.LoggerPlugin;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import reactor.kafka.receiver.ReceiverOptions;
 
@@ -43,6 +44,7 @@ public class KafkaLoggerPlugin implements LoggerPlugin {
     Map<String, Object> consumerProps = new HashMap<>();
     consumerProps.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapHost + ":" + port);
 
+
     Map<String, List<String>> options = splitQuery(loggerConfig.getUri().getQuery());
     if (options.containsKey("props")) {
       Properties properties = new Properties();
@@ -61,6 +63,8 @@ public class KafkaLoggerPlugin implements LoggerPlugin {
     consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
 
 
+//    consumerProps.put(SslConfigs.SSL_ENGINE_FACTORY_CLASS_CONFIG, MySslEngineFactory.class);
+//    consumerProps.put(SslConfigs.SSL_PROTOCOL_CONFIG, "TLSv1.2");
 
     ReceiverOptions<byte[], byte[]> receiverOptions =
         ReceiverOptions.<byte[], byte[]>create(consumerProps)
